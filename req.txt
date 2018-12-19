@@ -1,0 +1,4 @@
+Django==1.11.16
+django-widget-tweaks==1.4.3
+djangorestframework==3.8.2
+pytz==2018.7
