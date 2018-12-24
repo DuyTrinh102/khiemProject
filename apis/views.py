@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import json
 
+from devices.models import Device
 from places.models import Place
 
 
@@ -92,4 +93,23 @@ def api_create_place(request):
 			address = request.POST.get('address')
 			Place.objects.create(name=name, address=address, owner=request.user)
 			return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+	return HttpResponse({'result': True, 'message': 'Bạn không có quyền thêm nhóm!'})
+
+
+@csrf_exempt
+def api_create_device(request):
+	if request.user.is_authenticated:
+		if request.is_ajax():
+			name = request.POST.get('name')
+			unit = request.POST.get('unit')
+			place_id = request.POST.get('place_id')
+			try:
+				place = request.user.related_place.get(id=place_id)
+			except Place.DoesNotExist:
+				pass
+			else:
+				device = Device.objects.create(name=name, unit=unit)
+				place.devices.add(device)
+				print place, device
+				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
 	return HttpResponse({'result': True, 'message': 'Bạn không có quyền thêm nhóm!'})

@@ -9,4 +9,5 @@ urlpatterns = [
 	url(r'^application-main/', views.application_main, name='application_main'),
 	url(r'^places/devices/get/', views.view_get_devices_places, name='view_get_devices_places'),
 	url(r'^places/create/', views.api_create_place, name='api_create_place'),
+	url(r'^device/create/', views.api_create_device, name='api_create_device'),
 ]

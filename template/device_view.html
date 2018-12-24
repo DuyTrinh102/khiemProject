@@ -122,6 +122,7 @@
         <div class="container">
             {% if places %}
                 <div id="users-contain" class="container-fluid bg-2 text-center">
+                    <div id="dialog-form2" title="Create new device"></div>
                     <table id="users" class="table table-bordered">
                         <thead class="text-center">
                         <tr>
@@ -136,10 +137,14 @@
                                 <td>{{ place.name }}</td>
                                 <td>{{ place.address }}</td>
                                 {% if place.devices.all %}
-                                    <td>{{ place.devices.all }}</td>
+                                    <td>
+                                        {% for device in place.devices.all %}
+                                            <li><a href="#">{{ device.name}}</a></li>
+                                        {% endfor %}
+                                    </td>
                                 {% else %}
                                     <td>Not have devices
-                                        <button type="button" class="btn btn-dark" style="float: right;">
+                                        <button type="button" class="add-device" style="float: right;" data-url="{% url 'api_create_device' %}" data-place-id="{{ place.id }}">
                                             <span class="glyphicon glyphicon-plus bg-dark"></span>
                                         </button>
                                     </td>
