@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.db import IntegrityError
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -93,13 +94,16 @@ def api_create_place(request):
 			address = request.POST.get('address')
 			Place.objects.create(name=name, address=address, owner=request.user)
 			return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
-	return HttpResponse({'result': True, 'message': 'Bạn không có quyền thêm nhóm!'})
+	return HttpResponse({'result': False, 'message': 'Bạn không có quyền thêm nhóm!'})
 
 
 @csrf_exempt
 def api_create_device(request):
-	if request.user.is_authenticated:
+	message_error = ""
+	if not request.user.is_authenticated:
+		message_error = 'Bạn không có quyền thêm nhóm!'
 		if request.is_ajax():
+			serial = request.POST.get('serial')
 			name = request.POST.get('name')
 			unit = request.POST.get('unit')
 			place_id = request.POST.get('place_id')
@@ -108,8 +112,11 @@ def api_create_device(request):
 			except Place.DoesNotExist:
 				pass
 			else:
-				device = Device.objects.create(name=name, unit=unit)
-				place.devices.add(device)
-				print place, device
-				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
-	return HttpResponse({'result': True, 'message': 'Bạn không có quyền thêm nhóm!'})
+				try:
+					device = Device.objects.create(serial=serial, name=name, unit=unit)
+					place.devices.add(device)
+					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+				except IntegrityError:
+					message_error = "Serial is used"
+
+	return HttpResponse({'result': False, 'message': message_error})

@@ -15,6 +15,7 @@ class DataMeasure(models.Model):
 
 
 class Device(models.Model):
+	serial = models.CharField(max_length=50, unique=True)
 	name = models.CharField(max_length=50)
 	unit = models.CharField(max_length=50, verbose_name="Measure unit")
-	device_measure_data = models.ManyToManyField(DataMeasure, blank=True, null=True)
+	device_measure_data = models.ManyToManyField(DataMeasure, blank=True)

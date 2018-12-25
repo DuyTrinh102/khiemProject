@@ -7,6 +7,8 @@
             '<input id="address" name="address" type="text">\n' +
             '</form>';
         var form2 = '<form action="" method="post">\n' +
+            '<label>Serial:</label>\n' +
+            '<input id="serial" name="serial" type="text">\n' +
             '<label>Name:</label>\n' +
             '<input id="name2" name="name" type="text">\n' +
             '<label>Unit:</label>\n' +
@@ -24,7 +26,6 @@
                 {
                     text: 'Save',
                     click: function (event) {
-                        console.log("test");
                         var address = $("#address").val();
                         var name = $("#name").val();
                         if (address === '' || name === '') {
@@ -52,7 +53,6 @@
                                 address: address
                             },
                             'success': function (result) {
-                                console.log(result.result);
                                 if (result.result) {
                                     alert(result.message);
                                     location.reload();
@@ -85,10 +85,9 @@
                 {
                     text: 'Save',
                     click: function (event) {
-                        console.log("test");
                         var unit = $("#unit").val();
                         var name = $("#name2").val();
-                        console.log(unit);
+                        var serial = $("#serial").val();
                         if (unit === '' || name === '') {
                             alert("Please fill all fields...!!!!!!");
                             event.preventDefault();
@@ -110,6 +109,7 @@
                             'type': 'POST',
                             'url': $('.add-device').attr('data-url'),
                             'data': {
+                                serial: serial,
                                 name: name,
                                 unit: unit,
                                 place_id: $('.add-device').attr('data-place-id')
@@ -121,6 +121,7 @@
                                     location.reload();
                                 }
                                 else {
+                                    console.log(result.message);
                                     alert(result.message);
                                 }
                             },
