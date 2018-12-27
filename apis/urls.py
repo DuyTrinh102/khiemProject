@@ -10,4 +10,5 @@ urlpatterns = [
 	url(r'^places/devices/get/', views.view_get_devices_places, name='view_get_devices_places'),
 	url(r'^places/create/', views.api_create_place, name='api_create_place'),
 	url(r'^device/create/', views.api_create_device, name='api_create_device'),
+	url(r'^device/show/chart/', views.view_show_chart, name='view_show_chart'),
 ]

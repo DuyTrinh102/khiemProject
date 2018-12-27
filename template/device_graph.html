@@ -5,54 +5,19 @@
 {% block head %}
     <script type="application/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
-    <script type="application/javascript" src="{% static 'js/create_place.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
     <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.js" %}"></script>
     <script type="text/javascript" src="{% static "fusioncharts/themes/fusioncharts.theme.fint.js" %}"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid bg-10 text-center">
-        <div class="container">
-            <div id="dialog-form" title="Create new user"></div>
-            <button type="button" id="btnCreate" class="create-place" data-url="{% url 'api_create_place' %} ">Tạo nhóm</button>
-        </div>
-        <div class="container">
-            {% if places %}
-                <div id="users-contain" class="container-fluid bg-2 text-center">
-                    <div id="dialog-form2" title="Create new device"></div>
-                    <table id="users" class="table table-bordered">
-                        <thead class="text-center">
-                        <tr>
-                            <th class="text-warning text-center">Name</th>
-                            <th class="text-warning text-center">Address</th>
-                            <th class="text-warning text-center">Devices</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for place in places %}
-                            <tr>
-                                <td>{{ place.name }}</td>
-                                <td>{{ place.address }}</td>
-                                <td>
-                                    {% if place.devices.all %}
-                                            {% for device in place.devices.all %}
-                                                <li style="float: left;"><a href="#">{{ device.name }}</a></li><br>
-                                            {% endfor %}
-                                    {% else %}Not have device
-                                    {% endif %}
-                                    <button type="button" class="add-device" style="float: right;" data-url="{% url 'api_create_device' %}" data-place-id="{{ place.id }}">
-                                        <span class="glyphicon glyphicon-plus" style="color: black"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <h2 style="color: #2f2f2f">Chưa có trạm nào !</h2>
-            {% endif %}
-        </div>
-    </div>
+    <h1 style="color: #0b2e13;">FusionChart</h1>
+    {% for output in data_list %}
+        {% autoescape off %}
+            <div class="container-fluid bg-10 text-center" id='{{ output.constructorOptions.renderAt }}'>{{ output.render }}</div>
+        {% endautoescape %}
+    {% endfor %}
 {% endblock %}
