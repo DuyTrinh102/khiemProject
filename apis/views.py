@@ -94,7 +94,7 @@ def api_create_place(request):
 			address = request.POST.get('address')
 			Place.objects.create(name=name, address=address, owner=request.user)
 			return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
-	return HttpResponse({'result': False, 'message': 'Bạn không có quyền thêm nhóm!'})
+	return HttpResponse(json.dumps({'result': True, 'message': 'Bạn không có quyền thêm nhóm!'}), content_type='application/json')
 
 
 @csrf_exempt
@@ -102,6 +102,7 @@ def api_create_device(request):
 	message_error = ""
 	if not request.user.is_authenticated:
 		message_error = 'Bạn không có quyền thêm nhóm!'
+	else:
 		if request.is_ajax():
 			serial = request.POST.get('serial')
 			name = request.POST.get('name')
@@ -117,6 +118,6 @@ def api_create_device(request):
 					place.devices.add(device)
 					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
 				except IntegrityError:
-					message_error = "Serial is used"
-
-	return HttpResponse({'result': False, 'message': message_error})
+					message_error = "Mã serial đã được sử dụng!"
+	print message_error
+	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')

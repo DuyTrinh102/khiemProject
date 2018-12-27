@@ -32,37 +32,39 @@
                             alert("Please fill all fields...!!!!!!");
                             event.preventDefault();
                         }
-                        $.fn.csrfSafeMethod = function (method) {
-                            // these HTTP methods do not require CSRF protection
-                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                        };
+                        else {
+                            $.fn.csrfSafeMethod = function (method) {
+                                // these HTTP methods do not require CSRF protection
+                                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                            };
 
-                        $.ajaxSetup({
-                            beforeSend: function (xhr, settings) {
-                                if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                    var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
-                                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                            $.ajaxSetup({
+                                beforeSend: function (xhr, settings) {
+                                    if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+                                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                    }
                                 }
-                            }
-                        });
-                        $.ajax({
-                            'type': 'POST',
-                            'url': $('.create-place').attr('data-url'),
-                            'data': {
-                                name: name,
-                                address: address
-                            },
-                            'success': function (result) {
-                                if (result.result) {
-                                    alert(result.message);
-                                    location.reload();
-                                }
-                                else {
-                                    alert(result.message);
-                                }
-                            },
-                        });
-                        $(this).dialog("close");
+                            });
+                            $.ajax({
+                                'type': 'POST',
+                                'url': $('.create-place').attr('data-url'),
+                                'data': {
+                                    name: name,
+                                    address: address
+                                },
+                                'success': function (result) {
+                                    if (result.result) {
+                                        alert(result.message);
+                                        location.reload();
+                                    }
+                                    else {
+                                        alert(result.message);
+                                    }
+                                },
+                            });
+                            $(this).dialog("close");
+                        }
                     }
                 },
                 {
@@ -92,41 +94,43 @@
                             alert("Please fill all fields...!!!!!!");
                             event.preventDefault();
                         }
-                        $.fn.csrfSafeMethod = function (method) {
-                            // these HTTP methods do not require CSRF protection
-                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                        };
+                        else {
+                            $.fn.csrfSafeMethod = function (method) {
+                                // these HTTP methods do not require CSRF protection
+                                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                            };
 
-                        $.ajaxSetup({
-                            beforeSend: function (xhr, settings) {
-                                if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                    var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
-                                    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                            $.ajaxSetup({
+                                beforeSend: function (xhr, settings) {
+                                    if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+                                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                    }
                                 }
-                            }
-                        });
-                        $.ajax({
-                            'type': 'POST',
-                            'url': $('.add-device').attr('data-url'),
-                            'data': {
-                                serial: serial,
-                                name: name,
-                                unit: unit,
-                                place_id: $('.add-device').attr('data-place-id')
-                            },
-                            'success': function (result) {
-                                console.log(result.result);
-                                if (result.result) {
-                                    alert(result.message);
-                                    location.reload();
-                                }
-                                else {
-                                    console.log(result.message);
-                                    alert(result.message);
-                                }
-                            },
-                        });
-                        $(this).dialog("close");
+                            });
+                            $.ajax({
+                                'type': 'POST',
+                                'url': $('.add-device').attr('data-url'),
+                                'data': {
+                                    serial: serial,
+                                    name: name,
+                                    unit: unit,
+                                    place_id: $('.add-device').attr('data-place-id')
+                                },
+                                'success': function (result) {
+                                    console.log(result.result);
+                                    if (result.result) {
+                                        alert(result.message);
+                                        location.reload();
+                                    }
+                                    else {
+                                        console.log(result.message);
+                                        alert(result.message);
+                                    }
+                                },
+                            });
+                            $(this).dialog("close");
+                        }
                     }
                 },
                 {
@@ -141,7 +145,6 @@
             $('#dialog-form').dialog("open");
         });
         $('.add-device').on('click', function () {
-            console.log("hehe");
             $('#dialog-form2').dialog("open");
         });
     });
