@@ -126,9 +126,6 @@ def api_create_device(request):
 
 def view_show_chart(request):
 	if request.user.is_authenticated:
-
-		# Iterate through the data in `Revenue` model and insert in to the `data_source['data']` list.
-		print request.user.related_place.all()
 		data_list = []
 		temp = {}
 		for place in request.user.related_place.all():
@@ -148,23 +145,18 @@ def view_show_chart(request):
 				}
 
 				data_source['data'] = []
-				temp['devices'].append({
-					"serial": device.serial,
-					"data": device.device_measure_data.all()
-				})
-				print device.device_measure_data.all()
+
 				for key in device.device_measure_data.all():
 					data = {}
 					data['label'] = key.receive_at.strftime("%Y/%m/%d %H:%M")
 					data['value'] = key.value
 					data_source['data'].append(data)
-				if len(data_source['data']):
-					column2D = FusionCharts("line", "{}".format(device.serial), "600", "350", "{}".format(device.name), "json", data_source)
-					data_list.append(column2D)
-					print data_source['data']
-		print data_list
-
-		# Create an object for the Column 2D chart using the FusionCharts class constructor
-
+				column2D = FusionCharts("line", "{}".format(device.serial), "700", "450", "{}".format(device.name), "json", data_source)
+				# data_list.append(column2D)
+				temp['devices'].append({
+					"serial": device.serial,
+					"chart": column2D
+				})
+			data_list.append(temp)
 		return render(request, 'device_graph.html', {'data_list': data_list})
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})

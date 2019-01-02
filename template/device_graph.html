@@ -14,10 +14,14 @@
 {% endblock %}
 
 {% block body %}
-    <h1 style="color: #0b2e13;">FusionChart</h1>
-    {% for output in data_list %}
-        {% autoescape off %}
-            <div class="container-fluid bg-10 text-center" id='{{ output.constructorOptions.renderAt }}'>{{ output.render }}</div>
-        {% endautoescape %}
+    <h1 style="color: #0b2e13;">Device Chart</h1>
+    {% for place in data_list %}
+        <h2 style="color: #0b2e13;">Place: <a style="color: #1abc9c">{{ place.place_name }}</a></h2>
+        {% for device in place.devices %}
+            <li style="color: #0b2e13;">Serial: <a>{{ device.serial }}</a></li>
+            {% autoescape off %}
+                <div class="container-fluid bg-10 text-center" id='{{ device.chart.constructorOptions.renderAt }}'>{{ device.chart.render }}</div>
+            {% endautoescape %}
+        {% endfor %}
     {% endfor %}
 {% endblock %}
