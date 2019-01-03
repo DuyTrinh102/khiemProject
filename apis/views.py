@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import ast
+
 from django.db import IntegrityError
 from django.http import HttpResponse
 from rest_framework.response import Response
@@ -160,3 +162,45 @@ def view_show_chart(request):
 			data_list.append(temp)
 		return render(request, 'device_graph.html', {'data_list': data_list})
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
+
+
+def api_device_measure_update(request):
+	error = []
+	data = request.data.get('data', '')
+
+	if not data:
+		error.append({
+			"field": "data",
+			"message": "Data is required"
+		})
+	elif isinstance(data, unicode):
+		try:
+			data = ast.literal_eval(data)
+		except ValueError:
+			error.append({
+				"field": "data",
+				"message": "Data is invalid"
+			})
+	if not error:
+		if isinstance(data, list):
+			for data_temp in data:
+				if not isinstance(data_temp, dict) or ['serial', 'value'] != data_temp.keys():
+					break
+				else:
+					try:
+						device = Device.objects.get(serial=data_temp['serial'])
+					except Device.DoesNotExist:
+						error.append({
+							"field": "serial",
+							"message": "Invalid"
+						})
+					else:
+						measure = DataMeasure.objects.create(value=data_temp['value'])
+						device.measure.add(measure)
+						return Response({"result": True, "message": "Successful", "data": []}, status=status.HTTP_200_OK)
+		error.append({
+			"field": "data",
+			"message": "Data is invalid"
+		})
+	return Response({"result": False, "message": "Error!!!", "data": error}, status=status.HTTP_200_OK)
+
