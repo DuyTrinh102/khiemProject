@@ -141,8 +141,8 @@ def view_show_chart(request):
 					"subCaption": "Measurement",
 					"xAxisName": "Time",
 					"yAxisName": "Value (In unit)",
-					"caption": "Monthly revenue for last year",
-					"numberPrefix": "$",
+					"caption": "DEVICES",
+					"numberPrefix": "{}".format(device.unit),
 					"theme": "zune"
 				}
 
