@@ -117,20 +117,19 @@ def api_create_device(request):
 				pass
 			else:
 				try:
-					device = Device.objects.create(serial=serial, name=name, unit=unit)
-					place.devices.add(device)
+					Device.objects.create(serial=serial, name=name, unit=unit, place=place)
 					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
 				except IntegrityError:
 					message_error = "Mã serial đã được sử dụng!"
-	print message_error
 	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
 
 
 def view_show_chart(request):
 	if request.user.is_authenticated:
 		data_list = []
-		temp = {}
+
 		for place in request.user.related_place.all():
+			temp = {}
 			temp.update({
 				"place_name": place.name,
 				"devices": []
@@ -140,9 +139,9 @@ def view_show_chart(request):
 				data_source['chart'] = {
 					"subCaption": "Measurement",
 					"xAxisName": "Time",
-					"yAxisName": "Value (In unit)",
+					"yAxisName": "Value ({})".format(device.unit),
 					"caption": "DEVICES",
-					"numberPrefix": "{}".format(device.unit),
+					"numberPrefix": "",
 					"theme": "zune"
 				}
 
@@ -160,6 +159,7 @@ def view_show_chart(request):
 					"chart": column2D
 				})
 			data_list.append(temp)
+		print data_list
 		return render(request, 'device_graph.html', {'data_list': data_list})
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 

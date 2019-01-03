@@ -7,7 +7,7 @@ from .models import Device, DataMeasure
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-	list_display = ('serial', 'unit')
+	list_display = ('serial', 'unit', 'place')
 	filter_horizontal = ('device_measure_data',)
 
 
