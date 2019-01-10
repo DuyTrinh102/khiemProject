@@ -6,13 +6,19 @@
             '<label>Address:</label>\n' +
             '<input id="address" name="address" type="text">\n' +
             '</form>';
-        var form2 = '<form action="" method="post">\n' +
+        var form2 = '<form action="" method="post" id="test">\n' +
             '<label>Serial:</label>\n' +
             '<input id="serial" name="serial" type="text">\n' +
             '<label>Name:</label>\n' +
             '<input id="name2" name="name" type="text">\n' +
             '<label>Unit:</label>\n' +
-            '<input id="unit" name="unit" type="text">\n' +
+            // '<input id="unit" name="unit" type="text">\n' +
+            '<select id="unit" name="unit">\n' +
+            '<option value="volvo">Volvo</option>\n' +
+            '<option value="saab">Saab</option>\n' +
+            '<option value="mercedes">Mercedes</option>\n' +
+            '<option value="audi">Audi</option>\n' +
+            '</select>\n' +
             '</form>';
         $('#dialog-form').html(form).dialog({
             modal: true,
@@ -118,7 +124,7 @@
                                     place_id: $('.add-device').attr('data-place-id')
                                 },
                                 'success': function (result) {
-                                    console.log(result.result);
+                                    console.log($('.add-device').attr('data-place-id'));
                                     if (result.result) {
                                         alert(result.message);
                                         location.reload();

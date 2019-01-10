@@ -40,7 +40,7 @@
                                     {% else %}Not have device
                                     {% endif %}
                                     <button type="button" class="add-device" style="float: right;" data-url="{% url 'api_create_device' %}" data-place-id="{{ place.id }}">
-                                        <span class="glyphicon glyphicon-plus" style="color: black"></span>
+                                        <span class="glyphicon glyphicon-plus" style="color: black"></span>{{ place.id }}
                                     </button>
                                 </td>
                             </tr>

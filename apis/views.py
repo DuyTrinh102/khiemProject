@@ -104,13 +104,14 @@ def api_create_place(request):
 def api_create_device(request):
 	message_error = ""
 	if not request.user.is_authenticated:
-		message_error = 'Bạn không có quyền thêm nhóm!'
+		message_error = 'Bạn không có quyền thêm thiết bị!'
 	else:
 		if request.is_ajax():
 			serial = request.POST.get('serial')
 			name = request.POST.get('name')
 			unit = request.POST.get('unit')
 			place_id = request.POST.get('place_id')
+			print place_id
 			try:
 				place = request.user.related_place.get(id=place_id)
 			except Place.DoesNotExist:

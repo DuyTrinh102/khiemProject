@@ -4,9 +4,10 @@ from __future__ import unicode_literals
 from django.db import models
 from places.models import Place
 
-# class DeviceType(models.Model):
-# 	device_type = models.CharField(max_length=50, unique=True)
-# 	device_unit = models.CharField(max_length=50, verbose_name="Measure unit")
+UNIT_DEVICE = (
+	('m3', 'm3'),
+	('tds', 'tds')
+)
 
 
 class DataMeasure(models.Model):
@@ -18,7 +19,7 @@ class Device(models.Model):
 	place = models.ForeignKey(Place, related_name="devices")
 	serial = models.CharField(max_length=50, unique=True)
 	name = models.CharField(max_length=50)
-	unit = models.CharField(max_length=50, verbose_name="Measure unit")
+	unit = models.CharField(max_length=50, verbose_name="Measure unit", choices=UNIT_DEVICE)
 	device_measure_data = models.ManyToManyField(DataMeasure, blank=True)
 
 	def __unicode__(self):
