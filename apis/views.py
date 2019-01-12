@@ -93,10 +93,14 @@ def view_get_devices_places(request):
 def api_create_place(request):
 	if request.user.is_authenticated:
 		if request.is_ajax():
+			place_code = request.POST.get('place_code')
 			name = request.POST.get('name')
 			address = request.POST.get('address')
-			Place.objects.create(name=name, address=address, owner=request.user)
-			return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+			try:
+				Place.objects.create(name=name, address=address, owner=request.user, place_code=place_code)
+				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+			except IntegrityError:
+				return HttpResponse(json.dumps({'result': True, 'message': 'Mã gateway đã được sử dụng!'}), content_type='application/json')
 	return HttpResponse(json.dumps({'result': True, 'message': 'Bạn không có quyền thêm nhóm!'}), content_type='application/json')
 
 
@@ -111,7 +115,6 @@ def api_create_device(request):
 			name = request.POST.get('name')
 			unit = request.POST.get('unit')
 			place_id = request.POST.get('place_id')
-			print place_id
 			try:
 				place = request.user.related_place.get(id=place_id)
 			except Place.DoesNotExist:
@@ -122,6 +125,43 @@ def api_create_device(request):
 					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
 				except IntegrityError:
 					message_error = "Mã serial đã được sử dụng!"
+	return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+
+
+@csrf_exempt
+def api_control_place(request):
+	message_error = ""
+	if not request.user.is_authenticated:
+		message_error = 'Bạn không có quyền thêm thiết bị!'
+	else:
+		if request.is_ajax():
+			place_id = request.POST.get('place_id')
+			try:
+				place = request.user.related_place.get(id=place_id)
+			except Place.DoesNotExist:
+				message_error = "Không tìm thấy nhóm này!"
+				return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+			else:
+				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
+
+
+@csrf_exempt
+def api_delete_device(request):
+	message_error = ""
+	if not request.user.is_authenticated:
+		message_error = 'Bạn không có quyền thêm thiết bị!'
+	else:
+		if request.is_ajax():
+			device_id = request.POST.get('device_id')
+			try:
+				device = Device.objects.get(id=device_id)
+			except Device.DoesNotExist:
+				message_error = "Không tìm thấy nhóm này!"
+				return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+			else:
+				device.delete()
+				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
 	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
 
 
@@ -160,7 +200,6 @@ def view_show_chart(request):
 					"chart": column2D
 				})
 			data_list.append(temp)
-		print data_list
 		return render(request, 'device_graph.html', {'data_list': data_list})
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 

@@ -15,6 +15,11 @@
 
 {% block body %}
     <h1 style="color: #0b2e13;">Device Chart</h1>
+    <form style="color: #0c5460; float: right">
+        From: <input type="date" name="form_date" id="from_date">
+        To: <input type="date" name="to_date" id="to_date">
+        <input type="submit" value="Lọc">
+    </form>
     {% for place in data_list %}
         <h2 style="color: #0b2e13;">Place: <a style="color: #1abc9c">{{ place.place_name }}</a></h2>
         {% for device in place.devices %}

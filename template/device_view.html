@@ -7,18 +7,21 @@
     <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/create_place.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid bg-10 text-center">
         <div class="container">
-            <div id="dialog-form" title="Create new user"></div>
+            <div id="dialog-form" title="Create new place"></div>
             <button type="button" id="btnCreate" class="create-place" data-url="{% url 'api_create_place' %} ">Tạo nhóm</button>
         </div>
         <div class="container">
             {% if places %}
                 <div id="users-contain" class="container-fluid bg-2 text-center">
                     <div id="dialog-form2" title="Create new device"></div>
+                    <div id="dialog-form3" title="Control place"></div>
+                    <div id="dialog-form4" title="Delete device"></div>
                     <table id="users" class="table table-bordered">
                         <thead class="text-center">
                         <tr>
@@ -30,17 +33,23 @@
                         <tbody>
                         {% for place in places %}
                             <tr>
-                                <td>{{ place.name }}</td>
+                                <td>
+                                    {{ place.name }}
+                                    <button type="button" class="control-place" id="{{ place.id }}" style="float: right; color: #721c24;" data-url="{% url 'api_control_place' %}">Tắt nước</button>
+                                </td>
                                 <td>{{ place.address }}</td>
                                 <td>
                                     {% if place.devices.all %}
                                             {% for device in place.devices.all %}
-                                                <li style="float: left;"><a href="#">{{ device.name }}</a></li><br>
+                                                <li style="float: left;"><a href="#">{{ device.name }}</a></li>
+                                                <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;"><i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>
+                                                <br><hr align="center" width="70%">
                                             {% endfor %}
                                     {% else %}Not have device
                                     {% endif %}
-                                    <button type="button" class="add-device" style="float: right;" data-url="{% url 'api_create_device' %}" data-place-id="{{ place.id }}">
-                                        <span class="glyphicon glyphicon-plus" style="color: black"></span>{{ place.id }}
+                                    <hr>
+                                    <button type="button" class="add-device" id="{{ place.id }}" style="float: right;" data-url="{% url 'api_create_device' %}">
+                                        <span class="glyphicon glyphicon-plus" style="color: black"></span>
                                     </button>
                                 </td>
                             </tr>

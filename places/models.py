@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 
 class Place(models.Model):
+	place_code = models.CharField(max_length=50, unique=True, null=True)
 	name = models.CharField(max_length=50)
 	address = models.TextField(blank=True, null=True)
 	owner = models.ForeignKey(User, related_name="related_place")
