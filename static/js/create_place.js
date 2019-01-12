@@ -32,9 +32,10 @@
                 {
                     text: 'Save',
                     click: function (event) {
+                        var place_code = $("#place_code").val();
                         var address = $("#address").val();
                         var name = $("#name").val();
-                        if (address === '' || name === '') {
+                        if (place_code === '' || address === '' || name === '') {
                             alert("Please fill all fields...!!!!!!");
                             event.preventDefault();
                         }
@@ -56,6 +57,7 @@
                                 'type': 'POST',
                                 'url': $('.create-place').attr('data-url'),
                                 'data': {
+                                    place_code: place_code,
                                     name: name,
                                     address: address
                                 },

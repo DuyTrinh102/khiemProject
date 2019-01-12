@@ -12,7 +12,7 @@ UNIT_DEVICE = (
 
 class DataMeasure(models.Model):
 	value = models.IntegerField()
-	receive_at = models.DateTimeField(auto_created=True)
+	receive_at = models.DateTimeField(auto_now_add=True)
 
 
 class Device(models.Model):

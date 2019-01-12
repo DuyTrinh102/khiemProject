@@ -2,9 +2,11 @@
 from __future__ import unicode_literals
 
 import ast
+import datetime
 
 from django.db import IntegrityError
 from django.http import HttpResponse
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.shortcuts import render, redirect
@@ -14,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import json
 
+from apis.commons import publish_topic_mqtt
 from apis.fusioncharts import FusionCharts
 from devices.models import Device, DataMeasure
 from places.models import Place
@@ -142,7 +145,9 @@ def api_control_place(request):
 				message_error = "Không tìm thấy nhóm này!"
 				return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 			else:
-				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+				if publish_topic_mqtt('{}-{}'.format(place.place_code, 1)):
+					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+				message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
 	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
 
 
@@ -168,7 +173,17 @@ def api_delete_device(request):
 def view_show_chart(request):
 	if request.user.is_authenticated:
 		data_list = []
-
+		from_date = None
+		to_date = None
+		is_filter = False
+		if 'GET' in request.method:
+			from_date = request.GET.get('from_date')
+			to_date = request.GET.get('to_date')
+			if from_date and to_date:
+				from_date = datetime.datetime.strptime(from_date + ' 00:00:00', '%Y-%m-%d %H:%M:%S')
+				to_date = datetime.datetime.strptime(to_date + ' 23:59:59', '%Y-%m-%d %H:%M:%S')
+				if from_date < to_date:
+					is_filter = True
 		for place in request.user.related_place.all():
 			temp = {}
 			temp.update({
@@ -192,11 +207,16 @@ def view_show_chart(request):
 					data = {}
 					data['label'] = key.receive_at.strftime("%Y/%m/%d %H:%M")
 					data['value'] = key.value
-					data_source['data'].append(data)
-				column2D = FusionCharts("line", "{}".format(device.serial), "700", "450", "{}".format(device.name), "json", data_source)
+					if is_filter:
+						if from_date < key.receive_at.replace(tzinfo=None) < to_date:
+							data_source['data'].append(data)
+					else:
+						data_source['data'].append(data)
+				column2D = FusionCharts("line", "{}".format(device.serial), "700", "450", "{}".format(device.id), "json", data_source)
 				# data_list.append(column2D)
 				temp['devices'].append({
 					"serial": device.serial,
+					"name": device.name,
 					"chart": column2D
 				})
 			data_list.append(temp)
@@ -204,6 +224,8 @@ def view_show_chart(request):
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 
 
+@api_view(['POST'])
+@permission_classes((permissions.BasePermission,))
 def api_device_measure_update(request):
 	error = []
 	data = request.data.get('data', '')
@@ -236,7 +258,7 @@ def api_device_measure_update(request):
 						})
 					else:
 						measure = DataMeasure.objects.create(value=data_temp['value'])
-						device.measure.add(measure)
+						device.device_measure_data.add(measure)
 						return Response({"result": True, "message": "Successful", "data": []}, status=status.HTTP_200_OK)
 		error.append({
 			"field": "data",
