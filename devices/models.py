@@ -11,7 +11,7 @@ UNIT_DEVICE = (
 
 
 class DataMeasure(models.Model):
-	value = models.IntegerField()
+	value = models.FloatField()
 	receive_at = models.DateTimeField(auto_now_add=True)
 
 

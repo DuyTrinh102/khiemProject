@@ -1,0 +1,57 @@
+{% extends 'base_page.html' %}
+{% load static %}
+
+
+{% block head %}
+    <script type="application/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
+    <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.js" %}"></script>
+    <script type="text/javascript" src="{% static "fusioncharts/themes/fusioncharts.theme.fint.js" %}"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% endblock %}
+
+{% block body %}
+    <h1 style="color: #0b2e13;">Lượng tiêu dùng trong tháng</h1>
+    <form style="color: #0c5460; float: right">
+        From: <input type="date" name="from_date" id="from_date">
+        To: <input type="date" name="to_date" id="to_date">
+        <input type="submit" value="Lọc">
+    </form>
+    <div class="container-fluid bg-10 text-center">
+        <div class="container">
+            {% if places %}
+                <div id="users-contain" class="container-fluid bg-2 text-center">
+                    <div id="dialog-form2" title="Create new device"></div>
+                    <table id="users" class="table table-bordered">
+                        <thead class="text-center">
+                        <tr>
+                            <th class="text-warning text-center">Name</th>
+                            <th class="text-warning text-center">Month</th>
+                            <th class="text-warning text-center">Total Value</th>
+                            <th class="text-warning text-center">Total Money</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in places %}
+                            <tr>
+                                <td>
+                                    <div>{{ data.place.name }}</div>
+                                </td>
+                                <td>{{ data.month }}</td>
+                                <td>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <h2 style="color: #2f2f2f">Chưa có trạm nào !</h2>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

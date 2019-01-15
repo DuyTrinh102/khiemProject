@@ -13,5 +13,6 @@ urlpatterns = [
 	url(r'^device/create/', views.api_create_device, name='api_create_device'),
 	url(r'^device/delete/', views.api_delete_device, name='api_delete_device'),
 	url(r'^device/show/chart/', views.view_show_chart, name='view_show_chart'),
+	url(r'^device/show/payment/', views.view_show_payment, name='view_show_payment'),
 	url(r'^device/measure/update/', views.api_device_measure_update, name='api_device_measure_update'),
 ]

@@ -99,7 +99,6 @@ def view_get_devices_places(request):
 				'loads': place.related_loads.all(),
 				'devices': place.devices.all()
 			})
-		print data
 		return render(request, 'device_view.html', {'places': data})
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 
@@ -291,3 +290,29 @@ def api_device_measure_update(request):
 		})
 	return Response({"result": False, "message": "Error!!!", "data": error}, status=status.HTTP_200_OK)
 
+
+def view_show_payment(request):
+	if request.user.is_authenticated:
+		data_list = []
+		total_water = 0
+		from_date = None
+		to_date = None
+		is_filter = False
+		for place in request.user.related_place.all():
+			temp = {}
+			temp.update({
+				"place": place,
+				'month': datetime.datetime.now().month
+			})
+			devices = place.devices.filter(unit='m3')
+			for device in devices:
+				for data in device.device_measure_data.all():
+					total_water += data.value
+			temp.update({
+				'water_quality': total_water
+			})
+			data_list.append(temp)
+			total_water = 0
+		print data_list
+		return render(request, 'payment_water.html', {'places': data_list})
+	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
