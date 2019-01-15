@@ -154,58 +154,39 @@
             });
         });
 
-        // Control place
-        $('.control-place').on('click', function () {
+        $('.control-load').on('change', function () {
             var place_id = $(this).attr('id');
-            $('#dialog-form3').html('Bạn có muốn tắt nước cho nhóm thiết bị này?').dialog({
-                modal: true,
-                closeOnEscape: false,
-                dialogClass: "no-close",
-                resizable: false,
-                draggable: false,
-                width: 600,
-                buttons: [
-                    {
-                        text: 'Save',
-                        click: function (event) {
-                            $.fn.csrfSafeMethod = function (method) {
-                                // these HTTP methods do not require CSRF protection
-                                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                            };
+            var place_code = $(this).attr('data-place-code');
+            $.fn.csrfSafeMethod = function (method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            };
 
-                            $.ajaxSetup({
-                                beforeSend: function (xhr, settings) {
-                                    if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
-                                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
-                                    }
-                                }
-                            });
-                            $.ajax({
-                                'type': 'POST',
-                                'url': $('.control-place').attr('data-url'),
-                                'data': {
-                                    place_id: place_id
-                                },
-                                'success': function (result) {
-                                    if (result.result) {
-                                        alert(result.message);
-                                    }
-                                    else {
-                                        alert(result.message);
-                                    }
-                                },
-                            });
-                            $(this).dialog("close");
-                        }
-                    },
-                    {
-                        text: "Close",
-                        click: function () {
-                            $(this).dialog("close");
-                        }
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
                     }
-                ]
+                }
+            });
+            $.ajax({
+                'type': 'POST',
+                'url': $('.control-load').attr('data-url'),
+                'data': {
+                    place_id: place_id,
+                    place_code: place_code,
+                    is_checked: $(this).is(":checked")
+                },
+                'success': function (result) {
+                    if (result.result) {
+                        alert(result.message);
+                        localStorage.input = $(place_id).is(':checked');
+                    }
+                    else {
+                        alert(result.message);
+                    }
+                },
             });
         });
         // Control place

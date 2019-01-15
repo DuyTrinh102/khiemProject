@@ -8,6 +8,96 @@
     <script type="application/javascript" src="{% static 'js/create_place.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 90px;
+            height: 34px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ca2222;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2ab934;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(55px);
+            -ms-transform: translateX(55px);
+            transform: translateX(55px);
+        }
+        .on {
+            display: none;
+        }
+
+        .on, .off {
+            color: white;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            font-size: 10px;
+            font-family: Verdana, sans-serif;
+        }
+
+        input:checked + .slider .on {
+            display: block;
+        }
+
+        input:checked + .slider .off {
+            display: none;
+        }
+
+        /*--------- END --------*/
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 20px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+{#    <script type="text/javascript">#}
+{#        function ShowHideDiv(chkPassport) {#}
+{#            var place_id = $(chkPassport).attr('id');#}
+{#            console.log(place_id);#}
+{#            localStorage.input = $(chkPassport).is(':checked');#}
+{#        }#}
+{#    </script>#}
 {% endblock %}
 
 {% block body %}
@@ -34,17 +124,30 @@
                         {% for place in places %}
                             <tr>
                                 <td>
-                                    {{ place.name }}
-                                    <button type="button" class="control-place" id="{{ place.id }}" style="float: right; color: #721c24;" data-url="{% url 'api_control_place' %}">Tắt nước</button>
+                                    <div>{{ place.name }}</div>
+                                    <br><hr width="80%">
+                                    <!-- Rectangular switch -->
+                                        <label class="switch" style="float: right;">
+                                            <input type="checkbox" class="control-load" id="{{ place.id }}-load_main" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.load_main %} checked="checked" {% endif %}>
+                                            <div class="slider"><span class="on">Water ON</span><span class="off">Water OFF</span><!--END--></div>
+                                        </label>
+                                        {% for load in place.loads %}
+                                            <label class="switch">
+                                                <input type="checkbox" class="control-load" id="{{ place.id }}-{{ load.name }}" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if load.status %} checked="checked" {% endif %}>
+                                                <div class="slider round"><span class="on">{{ load.name }} ON</span><span class="off">{{ load.name }} OFF</span><!--END--></div>
+                                            </label>
+                                        {% endfor %}
                                 </td>
                                 <td>{{ place.address }}</td>
                                 <td>
                                     {% if place.devices.all %}
-                                            {% for device in place.devices.all %}
-                                                <li style="float: left;"><a href="#">{{ device.name }}</a></li>
-                                                <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;"><i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>
-                                                <br><hr align="center" width="70%">
-                                            {% endfor %}
+                                        {% for device in place.devices %}
+                                            <li style="float: left;"><a href="#">{{ device.name }}</a></li>
+                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;"><i
+                                                    class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>
+                                            <br>
+                                            <hr align="center" width="70%">
+                                        {% endfor %}
                                     {% else %}Not have device
                                     {% endif %}
                                     <hr>

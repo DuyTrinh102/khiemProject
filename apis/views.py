@@ -19,7 +19,7 @@ import json
 from apis.commons import publish_topic_mqtt
 from apis.fusioncharts import FusionCharts
 from devices.models import Device, DataMeasure
-from places.models import Place
+from places.models import Place, LOAD_LIST, Load
 
 
 def home_page(request):
@@ -87,8 +87,20 @@ def application_main(request):
 
 def view_get_devices_places(request):
 	if request.user.is_authenticated:
+		data = []
 		places = request.user.related_place.all()
-		return render(request, 'device_view.html', {'places': places})
+		for place in places:
+			data.append({
+				'id': place.id,
+				'place_code': place.place_code,
+				'name': place.name,
+				'address': place.address,
+				'load_main': place.load_main,
+				'loads': place.related_loads.all(),
+				'devices': place.devices.all()
+			})
+		print data
+		return render(request, 'device_view.html', {'places': data})
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 
 
@@ -138,14 +150,27 @@ def api_control_place(request):
 		message_error = 'Bạn không có quyền thêm thiết bị!'
 	else:
 		if request.is_ajax():
-			place_id = request.POST.get('place_id')
+			place_id, load_name = request.POST.get('place_id').split('-')
+			place_code = request.POST.get('place_code')
+			is_checked = request.POST.get('is_checked')
+			is_checked_data = 'a' if is_checked == 'true' else 'b'
+			is_checked_bool = True if is_checked == 'true' else False
+
 			try:
 				place = request.user.related_place.get(id=place_id)
 			except Place.DoesNotExist:
 				message_error = "Không tìm thấy nhóm này!"
 				return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 			else:
-				if publish_topic_mqtt('{}-{}'.format(place.place_code, 1)):
+				if load_name == 'load_main':
+					place.load_main = is_checked_bool
+					place.save()
+				else:
+					load = place.related_loads.filter(name=load_name).first()
+					if load:
+						load.status = is_checked_bool
+						load.save()
+				if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data)):
 					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
 				message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
 	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
