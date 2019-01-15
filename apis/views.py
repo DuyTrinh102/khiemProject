@@ -19,7 +19,7 @@ import json
 from apis.commons import publish_topic_mqtt
 from apis.fusioncharts import FusionCharts
 from devices.models import Device, DataMeasure
-from places.models import Place, LOAD_LIST, Load
+from places.models import Place, LOAD_LIST, Load, UnitPrice
 
 
 def home_page(request):
@@ -68,7 +68,6 @@ def change_password(request):
 	if request.user.is_authenticated:
 		if request.method == 'POST':
 			form = ChangePasswordForm(request.user, request.POST)
-			print form.is_valid(), request.POST
 			if form.is_valid():
 				form.save()
 				logout(request)
@@ -93,6 +92,7 @@ def view_get_devices_places(request):
 			data.append({
 				'id': place.id,
 				'place_code': place.place_code,
+				'status': place.status,
 				'name': place.name,
 				'address': place.address,
 				'load_main': place.load_main,
@@ -164,6 +164,10 @@ def api_control_place(request):
 				if load_name == 'load_main':
 					place.load_main = is_checked_bool
 					place.save()
+				elif load_name == 'status':
+					print is_checked_bool
+					place.status = is_checked_bool
+					place.save()
 				else:
 					load = place.related_loads.filter(name=load_name).first()
 					if load:
@@ -190,6 +194,25 @@ def api_delete_device(request):
 				return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 			else:
 				device.delete()
+				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
+
+
+@csrf_exempt
+def api_config_price(request):
+	message_error = ""
+	if not request.user.is_authenticated:
+		message_error = 'Bạn không có quyền!'
+	else:
+		if request.is_ajax():
+			value = request.POST.get('value')
+			print value
+			if not value.isdigit():
+				message_error = 'Bạn phải nhập kiểu số'
+			else:
+				unit_price, created = UnitPrice.objects.get_or_create(user=request.user)
+				unit_price.value = value
+				unit_price.save()
 				return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
 	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
 
@@ -253,7 +276,6 @@ def view_show_chart(request):
 def api_device_measure_update(request):
 	error = []
 	data = request.data.get('data', '')
-
 	if not data:
 		error.append({
 			"field": "data",
@@ -283,7 +305,7 @@ def api_device_measure_update(request):
 					else:
 						measure = DataMeasure.objects.create(value=data_temp['value'])
 						device.device_measure_data.add(measure)
-						return Response({"result": True, "message": "Successful", "data": []}, status=status.HTTP_200_OK)
+			return Response({"result": True, "message": "Successful", "data": []}, status=status.HTTP_200_OK)
 		error.append({
 			"field": "data",
 			"message": "Data is invalid"
@@ -295,22 +317,31 @@ def view_show_payment(request):
 	if request.user.is_authenticated:
 		data_list = []
 		total_water = 0
-		from_date = None
-		to_date = None
-		is_filter = False
+		month = None
+		if 'GET' in request.method:
+			month_data = request.GET.get('month')
+			if month_data:
+				date = datetime.datetime.strptime(month_data, '%Y-%m')
+				if date <= datetime.datetime.now():
+					month = date.month
+		if not month:
+			month = datetime.datetime.now().month
+
 		for place in request.user.related_place.all():
 			temp = {}
 			temp.update({
 				"place": place,
-				'month': datetime.datetime.now().month
+				'month': month
 			})
 			devices = place.devices.filter(unit='m3')
 			for device in devices:
 				for data in device.device_measure_data.all():
 					total_water += data.value
+			unit_price = request.user.unit_price.all().first().value
 			temp.update({
+				'unit_price': int(unit_price),
 				'water_quality': total_water,
-				'total_price': '{:,}'.format(total_water*3000)
+				'total_price': '{:,}'.format(int(total_water*int(unit_price)))
 			})
 			data_list.append(temp)
 			total_water = 0

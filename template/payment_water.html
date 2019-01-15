@@ -6,11 +6,12 @@
     <script type="application/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
+    <script type="application/javascript" src="{% static 'js/config_unit.js' %}"></script>
     <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.js" %}"></script>
     <script type="text/javascript" src="{% static "fusioncharts/themes/fusioncharts.theme.fint.js" %}"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.6.3/css/all.css' integrity='sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/' crossorigin='anonymous'>
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.6.3/css/all.css' integrity='sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/' crossorigin='anonymous'>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 {% endblock %}
@@ -18,8 +19,14 @@
 {% block body %}
     <h1 style="color: #0b2e13;">Lượng tiêu dùng trong tháng</h1>
     <div class="container-fluid bg-10 text-center">
+
         <div class="container">
+            <form style="color: #1abc9c; float: right;">
+                Tháng: <input type="month" name="month" id="month">
+                <input type="submit" style="float: right;" value="Lọc">
+            </form>
             {% if places %}
+                <div id="dialog-form" title="Config unit price"></div>
                 <div id="users-contain" class="container-fluid bg-2 text-center">
                     <div id="dialog-form2" title="Create new device"></div>
                     <table id="users" class="table table-bordered">
@@ -29,7 +36,7 @@
                             <th class="text-warning text-center">Tháng</th>
                             <th class="text-warning text-center">Tổng tiêu thụ (mm3)</th>
                             <th class="text-warning text-center">Đơn giá (vnd/m3)
-                                <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">
+                                <button type="submit" class="config-price" data-url="{% url 'api_config_price' %}" style="background: #4e555b; float: right;">
                                     <i class="far fa-edit" aria-hidden="true" size="2px;"></i></button>
                             </th>
                             <th class="text-warning text-center">Tổng tiền (vnd)</th>
@@ -46,7 +53,7 @@
                                     <div>{{ data.water_quality }}</div>
                                 </td>
                                 <td>
-                                    <div>3000</div>
+                                    <div>{{ data.unit_price }}</div>
                                 </td>
                                 <td>
                                     <div>{{ data.total_price }}</div>

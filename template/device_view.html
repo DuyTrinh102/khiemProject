@@ -125,6 +125,10 @@
                             <tr>
                                 <td>
                                     <div>{{ place.name }}</div>
+                                    <label class="switch" style="float: right;">
+                                            <input type="checkbox" class="control-load" id="{{ place.id }}-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>
+                                            <div class="slider"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>
+                                    </label>
                                     <br><hr width="80%">
                                     <!-- Rectangular switch -->
                                         <label class="switch" style="float: right;">
