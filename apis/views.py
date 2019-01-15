@@ -309,10 +309,10 @@ def view_show_payment(request):
 				for data in device.device_measure_data.all():
 					total_water += data.value
 			temp.update({
-				'water_quality': total_water
+				'water_quality': total_water,
+				'total_price': '{:,}'.format(total_water*3000)
 			})
 			data_list.append(temp)
 			total_water = 0
-		print data_list
 		return render(request, 'payment_water.html', {'places': data_list})
 	return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})

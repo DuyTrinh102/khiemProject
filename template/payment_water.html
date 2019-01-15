@@ -9,17 +9,14 @@
     <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.js" %}"></script>
     <script type="text/javascript" src="{% static "fusioncharts/themes/fusioncharts.theme.fint.js" %}"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.6.3/css/all.css' integrity='sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/' crossorigin='anonymous'>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 {% endblock %}
 
 {% block body %}
     <h1 style="color: #0b2e13;">Lượng tiêu dùng trong tháng</h1>
-    <form style="color: #0c5460; float: right">
-        From: <input type="date" name="from_date" id="from_date">
-        To: <input type="date" name="to_date" id="to_date">
-        <input type="submit" value="Lọc">
-    </form>
     <div class="container-fluid bg-10 text-center">
         <div class="container">
             {% if places %}
@@ -28,10 +25,14 @@
                     <table id="users" class="table table-bordered">
                         <thead class="text-center">
                         <tr>
-                            <th class="text-warning text-center">Name</th>
-                            <th class="text-warning text-center">Month</th>
-                            <th class="text-warning text-center">Total Value</th>
-                            <th class="text-warning text-center">Total Money</th>
+                            <th class="text-warning text-center">Tên Gateway</th>
+                            <th class="text-warning text-center">Tháng</th>
+                            <th class="text-warning text-center">Tổng tiêu thụ (mm3)</th>
+                            <th class="text-warning text-center">Đơn giá (vnd/m3)
+                                <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">
+                                    <i class="far fa-edit" aria-hidden="true" size="2px;"></i></button>
+                            </th>
+                            <th class="text-warning text-center">Tổng tiền (vnd)</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -42,7 +43,13 @@
                                 </td>
                                 <td>{{ data.month }}</td>
                                 <td>
-
+                                    <div>{{ data.water_quality }}</div>
+                                </td>
+                                <td>
+                                    <div>3000</div>
+                                </td>
+                                <td>
+                                    <div>{{ data.total_price }}</div>
                                 </td>
                             </tr>
                         {% endfor %}

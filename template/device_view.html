@@ -143,8 +143,8 @@
                                     {% if place.devices.all %}
                                         {% for device in place.devices %}
                                             <li style="float: left;"><a href="#">{{ device.name }}</a></li>
-                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;"><i
-                                                    class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>
+                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">
+                                            <i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>
                                             <br>
                                             <hr align="center" width="70%">
                                         {% endfor %}
