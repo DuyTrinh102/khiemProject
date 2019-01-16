@@ -368,9 +368,9 @@ def view_show_payment(request):
 			for device in devices:
 				for data in device.device_measure_data.all():
 					total_water += data.value
-			unit_price = request.user.unit_price.all().first().value
+			unit_price = request.user.unit_price.all().first()
 			temp.update({
-				'unit_price': int(unit_price),
+				'unit_price': int(unit_price) if not unit_price else 0,
 				'water_quality': total_water,
 				'total_price': '{:,}'.format(int((total_water / 1000)*int(unit_price)))
 			})
