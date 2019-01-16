@@ -165,16 +165,19 @@ def api_control_place(request):
 					place.load_main = is_checked_bool
 					place.save()
 				elif load_name == 'status':
-					print is_checked_bool
 					place.status = is_checked_bool
 					place.save()
+					if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data)):
+						if is_checked_bool:
+							return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': True}), content_type='application/json')
+						return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': False}), content_type='application/json')
 				else:
 					load = place.related_loads.filter(name=load_name).first()
 					if load:
 						load.status = is_checked_bool
 						load.save()
 				if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data)):
-					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
+					return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': False}), content_type='application/json')
 				message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
 	return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
 

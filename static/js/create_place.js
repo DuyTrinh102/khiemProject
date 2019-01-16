@@ -16,8 +16,9 @@
             '<label>Unit:</label>\n' +
             // '<input id="unit" name="unit" type="text">\n' +
             '<select id="unit" name="unit">\n' +
-            '<option value="m3">M3</option>\n' +
-            '<option value="tds">TDS</option>\n' +
+            '<option value="m3">lít/h</option>\n' +
+            '<option value="pbm">pbm (TDS)</option>\n' +
+            '<option value="NTU">NTU</option>\n' +
             '</select>\n' +
             '</form>';
         $('#dialog-form').html(form).dialog({
@@ -179,15 +180,18 @@
                     is_checked: $(this).is(":checked")
                 },
                 'success': function (result) {
-                    if (result.result) {
+                    if (result.result){
                         alert(result.message);
-                        localStorage.input = $(place_id).is(':checked');
+                        if (result.status){
+                            location.reload();
+                        }
                     }
                     else {
                         alert(result.message);
                     }
                 },
             });
+
         });
         // Control place
         $('.delete-device').on('click', function () {

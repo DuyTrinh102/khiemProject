@@ -207,12 +207,18 @@
                                     <br><hr width="80%">
                                     <!-- Rectangular switch -->
                                         <label class="switch" style="float: right;">
-                                            <input type="checkbox" class="control-load" id="{{ place.id }}-load_main" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.load_main %} checked="checked" {% endif %}>
+                                            <input type="checkbox" class="control-load" id="{{ place.id }}-load_main" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
+                                                    {% if place.load_main %} checked="checked" {% endif %}
+                                                    {% if place.status %} disabled {% endif %}
+                                            >
                                             <div class="slider"><span class="on">Water ON</span><span class="off">Water OFF</span><!--END--></div>
                                         </label>
                                         {% for load in place.loads %}
                                             <label class="switch">
-                                                <input type="checkbox" class="control-load" id="{{ place.id }}-{{ load.name }}" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if load.status %} checked="checked" {% endif %}>
+                                                <input type="checkbox" class="control-load" id="{{ place.id }}-{{ load.name }}" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
+                                                        {% if load.status %} checked="checked" {% endif %}
+                                                        {% if place.status %} disabled {% endif %}
+                                                >
                                                 <div class="slider round"><span class="on">{{ load.name }} ON</span><span class="off">{{ load.name }} OFF</span><!--END--></div>
                                             </label>
                                         {% endfor %}
