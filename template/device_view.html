@@ -91,13 +91,88 @@
             border-radius: 50%;
         }
     </style>
-{#    <script type="text/javascript">#}
-{#        function ShowHideDiv(chkPassport) {#}
-{#            var place_id = $(chkPassport).attr('id');#}
-{#            console.log(place_id);#}
-{#            localStorage.input = $(chkPassport).is(':checked');#}
-{#        }#}
-{#    </script>#}
+    <style>
+        .switch2 {
+            position: relative;
+            display: inline-block;
+            width: 80px;
+            height: 34px;
+        }
+
+        .switch2 input {
+            display: none;
+        }
+
+        .slider2 {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider2:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider2 {
+            background-color: #2196F3;
+        }
+
+        input:focus + .slider2 {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider2:before {
+            -webkit-transform: translateX(55px);
+            -ms-transform: translateX(55px);
+            transform: translateX(55px);
+        }
+        .on {
+            display: none;
+        }
+
+        .on, .off {
+            color: white;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            font-size: 10px;
+            font-family: Verdana, sans-serif;
+        }
+
+        input:checked + .slider2 .on {
+            display: block;
+        }
+
+        input:checked + .slider2 .off {
+            display: none;
+        }
+
+        /*--------- END --------*/
+
+        /* Rounded sliders */
+        .slider2.round {
+            border-radius: 20px;
+        }
+
+        .slider2.round:before {
+            border-radius: 50%;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -125,9 +200,9 @@
                             <tr>
                                 <td>
                                     <div>{{ place.name }}</div>
-                                    <label class="switch" style="float: right;">
+                                    <label class="switch2" style="float: right;">
                                             <input type="checkbox" class="control-load" id="{{ place.id }}-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>
-                                            <div class="slider"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>
+                                            <div class="slider2"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>
                                     </label>
                                     <br><hr width="80%">
                                     <!-- Rectangular switch -->

@@ -244,8 +244,36 @@ def view_show_chart(request):
 					"xAxisName": "Time",
 					"yAxisName": "Value ({})".format(device.unit),
 					"caption": "DEVICES",
-					"numberPrefix": "",
-					"theme": "zune"
+					# "anchorbgcolor": "BBDA00",
+					# "anchorbordercolor": "FFFFFF",
+					# "anchorborderthickness": "2",
+					# "anchorradius": "4",
+					"basefontcolor": "FFFFFF",
+					"bgalpha": "100",
+					"bgcolor": "6DA5DB",
+					"canvasbgalpha": "0",
+					# "canvasbordercolor": "FFFFFF",
+					# "canvaspadding": "10",
+
+					# "divlinealpha": "100",
+					# "divlinecolor": "FFFFFF",
+					# "labeldisplay": "ROTATE",
+					"slantlabels": "1",
+					"anchorradius": "0",
+					"anchorgbalpha": "10",
+					"linecolor": "BBDA00",
+					"numbersuffix": "",
+					# "numvdivlines": "10",
+					# "showalternatevgridcolor": "0",
+					# "showborder": "0",
+					"showvalues": "0",
+					"tooltipbgcolor": "406181",
+					"tooltipbordercolor": "406181",
+					"vdivlineisdashed": "1",
+					"vdivlinecolor": "#ffffff",
+					"vdivlinealpha": "100",
+					# "yaxismaxvalue": "100",
+					"animation": "1",
 				}
 
 				data_source['data'] = []
@@ -341,7 +369,7 @@ def view_show_payment(request):
 			temp.update({
 				'unit_price': int(unit_price),
 				'water_quality': total_water,
-				'total_price': '{:,}'.format(int(total_water*int(unit_price)))
+				'total_price': '{:,}'.format(int((total_water / 1000)*int(unit_price)))
 			})
 			data_list.append(temp)
 			total_water = 0
