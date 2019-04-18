@@ -33,7 +33,7 @@ def publish_topic_mqtt(value, user='', password='', topic='publishTopic'):
 		client.loop_stop()
 	except Exception as e:
 		return False
-	return False
+	return True
 
 
 def subscribe_topic_mqtt(username='tnuxyfho', password='y2RS8p-Q36fB', topic='khiemtopic'):
