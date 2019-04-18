@@ -1,6 +1,6 @@
 import json
 
-import paho.mqtt.client as Client
+import paho.mqtt.client as mqtt
 import time
 import uuid
 
@@ -20,7 +20,7 @@ def publish_topic_mqtt(value, user='', password='', topic='publishTopic'):
 
 	broker_address = "broker.hivemq.com"
 	port = 8000
-	client = Client.Client(client_id="{client_id}".format(client_id=uuid.uuid1()))
+	client = mqtt.Client(client_id="{client_id}".format(client_id=uuid.uuid1()), transport='websockets')
 	# client.username_pw_set(user, password=password)
 	client.on_connect = on_connect
 	client.connect(broker_address, port=port)
@@ -45,7 +45,7 @@ def subscribe_topic_mqtt(username='tnuxyfho', password='y2RS8p-Q36fB', topic='kh
 	broker_address = "m16.cloudmqtt.com"
 	port = 19928
 
-	client = Client.Client(client_id="iot-{client_id}".format(client_id=uuid.uuid1()))
+	client = mqtt.Client(client_id="iot-{client_id}".format(client_id=uuid.uuid1()))
 	client.username_pw_set(username, password=password)
 	client.on_connect = on_connect
 	client.on_message = on_message
