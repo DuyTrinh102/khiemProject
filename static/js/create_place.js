@@ -181,7 +181,7 @@
                 },
                 'success': function (result) {
                     if (result.result){
-                        alert(result.message);
+                        // alert(result.message);
                         if (result.status){
                             location.reload();
                         }

@@ -11,6 +11,11 @@ STATUS_CONTROL = (
 	(False, 'Manual'),
 )
 
+TYPE_DISPLAY = (
+	(0, 'Warning'),
+	(1, 'Display')
+)
+
 
 class UnitPrice(models.Model):
 	user = models.ForeignKey(User, related_name="unit_price")
@@ -31,5 +36,17 @@ class Place(models.Model):
 
 class Load(models.Model):
 	place = models.ForeignKey(Place, related_name="related_loads")
-	name = models.CharField(max_length=10)
+	name = models.CharField(max_length=30)
+	serial = models.CharField(max_length=30, unique=True)
 	status = models.BooleanField(default=False)
+
+
+class Sensor(models.Model):
+	place = models.ForeignKey(Place, related_name="sensors")
+	serial = models.CharField(max_length=50, unique=True)
+	name = models.CharField(max_length=50)
+	type_display = models.PositiveIntegerField(default=0, choices=TYPE_DISPLAY)
+
+	def __unicode__(self):
+		return unicode(self.name)
+
