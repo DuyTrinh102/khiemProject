@@ -11,7 +11,6 @@ def on_connect(client, userdata, flags, rc):
 	if rc == 0:
 		global Connected
 		Connected = True
-
 	else:
 		return
 
@@ -19,10 +18,8 @@ def on_connect(client, userdata, flags, rc):
 def publish_topic_mqtt(value, user='', password='', topic='publishTopic'):
 	global Connected
 
-	broker_address = "test.mosquitto.org"
+	broker_address = "broker.hivemq.com"
 	port = 1883
-
-
 	client = Client.Client(client_id="{client_id}".format(client_id=uuid.uuid1()))
 	# client.username_pw_set(user, password=password)
 	client.on_connect = on_connect
