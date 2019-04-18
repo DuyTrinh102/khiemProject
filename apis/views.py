@@ -186,6 +186,8 @@ def api_control_place(request):
                         load.save()
                     if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
                         return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': False}), content_type='application/json')
+                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data), 'status': False}), content_type='application/json')
+
                 message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 

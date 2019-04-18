@@ -82,25 +82,6 @@
 			}
 		}
 
-
-
-
-
-		// if (data.hasOwnProperty('status')) {
-		// 	var topics = message.destinationName.split('/')[1];
-		//
-		// 	$('.field-username').each(function () {
-		// 		var name = $(this).find('a').text();
-		//
-		// 		if (name === topics) {
-		// 			if (data['status'] === 'online') {
-		// 				$(this).parent().find('.field-is_online > img').attr('src', '/static/admin/img/icon-yes.svg');
-		// 			} else {
-		// 				$(this).parent().find('.field-is_online > img').attr('src', '/static/admin/img/icon-no.svg');
-		// 			}
-		// 		}
-		// 	});
-		// }
 	}
 
 	// Connect failed

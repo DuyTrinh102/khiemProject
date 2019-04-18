@@ -17,22 +17,23 @@ def on_connect(client, userdata, flags, rc):
 
 def publish_topic_mqtt(value, user='', password='', topic='publishTopic'):
 	global Connected
-
-	broker_address = "broker.hivemq.com"
-	port = 8000
-	client = mqtt.Client(client_id="{client_id}".format(client_id=uuid.uuid1()), transport='websockets')
-	# client.username_pw_set(user, password=password)
-	client.on_connect = on_connect
-	client.connect(broker_address, port=port)
-	client.loop_start()
-	while Connected != True:  # Wait for connection
+	try:
+		broker_address = "broker.hivemq.com"
+		port = 8000
+		client = mqtt.Client(client_id="{client_id}".format(client_id=uuid.uuid1()), transport='websockets')
+		# client.username_pw_set(user, password=password)
+		client.on_connect = on_connect
+		client.connect(broker_address, port=port)
+		client.loop_start()
+		while Connected != True:  # Wait for connection
+			time.sleep(0.1)
+		client.publish(topic, value)
 		time.sleep(0.1)
-	client.publish(topic, value)
-	time.sleep(0.1)
-	client.disconnect()
-	client.loop_stop()
-
-	return True
+		client.disconnect()
+		client.loop_stop()
+	except Exception as e:
+		return False
+	return False
 
 
 def subscribe_topic_mqtt(username='tnuxyfho', password='y2RS8p-Q36fB', topic='khiemtopic'):
