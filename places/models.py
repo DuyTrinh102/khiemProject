@@ -26,7 +26,7 @@ class Place(models.Model):
 	place_code = models.CharField(max_length=50, unique=True, null=True)
 	name = models.CharField(max_length=50)
 	address = models.TextField(blank=True, null=True)
-	owner = models.ForeignKey(User, related_name="related_place")
+	owner = models.ForeignKey(User, related_name="related_place", blank=True, null=True)
 	load_main = models.BooleanField(default=False)
 	status = models.BooleanField(default=False, choices=STATUS_CONTROL)
 
@@ -45,6 +45,7 @@ class Sensor(models.Model):
 	place = models.ForeignKey(Place, related_name="sensors")
 	serial = models.CharField(max_length=50, unique=True)
 	name = models.CharField(max_length=50)
+	unit = models.CharField(max_length=30, blank=True)
 	type_display = models.PositiveIntegerField(default=0, choices=TYPE_DISPLAY)
 
 	def __unicode__(self):

@@ -13,7 +13,7 @@ class LoadInlines(admin.TabularInline):
 
 class SensorInlines(admin.TabularInline):
 	model = Sensor
-	fields = ('name', 'serial', 'type_display')
+	fields = ('name', 'serial', 'type_display', 'unit')
 	extra = 0
 
 
