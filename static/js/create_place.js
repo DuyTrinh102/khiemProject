@@ -186,7 +186,7 @@
                                 location.reload();
                             }
 
-
+                            console.log(result.isPub);
                             if (result.isPub){
                                 var host = 'broker.hivemq.com';
                                 var port = 8000;
@@ -334,13 +334,11 @@
 
 	// Connect failed
 	function doFail(message) {
-		alert(message.errorMessage);
+		location.reload();
 	}
 
 	function isMobile() {
-    ///<summary>Detecting whether the browser is a mobile browser or desktop browser</summary>
-    ///<returns>A boolean value indicating whether the browser is a mobile browser or not</returns>
-
+    
     if (sessionStorage.desktop) // desktop storage
         return false;
     else if (localStorage.mobile) // mobile storage

@@ -85,6 +85,6 @@
 
 	// Connect failed
 	function doFail(message) {
-		alert(message.errorMessage);
+		location.reload();
 	}
 })(jQuery);

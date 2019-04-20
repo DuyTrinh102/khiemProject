@@ -81,21 +81,10 @@
 			console.log('checked-b');
 		}
 
-
-		// if (type === 1){
-		// 	$('#' + data['serial']).val(value);
-		// } else {
-		// 	if (value === 1) {
-		// 		$('#' + data['serial']).attr('src', '/static/images/ledon-icon.png');
-		// 	} else {
-		// 		$('#' + data['serial']).attr('src', '/static/images/ledoff-icon.jpg');
-		// 	}
-		// }
-
 	}
 
 	// Connect failed
 	function doFail(message) {
-		alert(message.errorMessage);
+		location.reload();
 	}
 })(jQuery);
