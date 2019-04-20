@@ -157,7 +157,6 @@
 
         $('.control-load').on('change', function () {
                 var place_id = $(this).attr('id');
-                console.log(place_id);
                 var place_code = $(this).attr('data-place-code');
                 $.fn.csrfSafeMethod = function (method) {
                     // these HTTP methods do not require CSRF protection
@@ -186,6 +185,8 @@
                             if (result.status){
                                 location.reload();
                             }
+
+
                             if (result.isPub){
                                 var host = 'broker.hivemq.com';
                                 var port = 8000;
@@ -335,5 +336,22 @@
 	function doFail(message) {
 		alert(message.errorMessage);
 	}
+
+	function isMobile() {
+    ///<summary>Detecting whether the browser is a mobile browser or desktop browser</summary>
+    ///<returns>A boolean value indicating whether the browser is a mobile browser or not</returns>
+
+    if (sessionStorage.desktop) // desktop storage
+        return false;
+    else if (localStorage.mobile) // mobile storage
+        return true;
+
+    // alternative
+    var mobile = ['iphone','ipad','android','blackberry','nokia','opera mini','windows mobile','windows phone','iemobile'];
+    for (var i in mobile) if (navigator.userAgent.toLowerCase().indexOf(mobile[i].toLowerCase()) > 0) return true;
+
+    // nothing found.. assume desktop
+    return false;
+}
 
 })(jQuery);

@@ -68,7 +68,6 @@
 	// called when a message arrives
 	function onMessageArrived(message) {
 		var data = JSON.parse(message.payloadString);
-		console.log(data);
 		var type = data['type'];
 		var value = data['value'];
 
