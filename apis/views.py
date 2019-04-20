@@ -113,7 +113,7 @@ def api_create_place(request):
             address = request.POST.get('address')
             try:
                 # Place.objects.create(name=name, address=address, owner=request.user, place_code=place_code)
-                place = Place.objects.get(place_code=place_code)
+                place = Place.objects.get(place_code=place_code, owner=None)
                 place.name = name
                 place.address = address
                 place.owner = request.user

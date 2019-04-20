@@ -9,6 +9,7 @@
     <script type="text/javascript" src="{% static 'js/mqtt/mqttws31.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/create_place.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/mqtt_realtime.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/mqtt_load.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -184,31 +185,31 @@
             <div id="dialog-form" title="Thêm trạm của bạn"></div>
             <button type="button" id="btnCreate" class="create-place" data-url="{% url 'api_create_place' %} ">Thêm trạm</button>
         </div>
-        <div class="container">
+        <div id="users-contain" class="container bg-4 text-center">
             {% if places %}
-                <div id="users-contain" class="container-fluid bg-2 text-center">
-                    <div id="dialog-form2" title="Create new device"></div>
-                    <div id="dialog-form3" title="Control place"></div>
-                    <div id="dialog-form4" title="Delete device"></div>
-                    <table id="users" class="table table-bordered">
-                        <thead class="text-center">
+
+                <div id="dialog-form2" title="Create new device"></div>
+                <div id="dialog-form3" title="Control place"></div>
+                <div id="dialog-form4" title="Delete device"></div>
+                <table id="users" class="table table-bordered" style="position: relative;">
+                    <thead class="text-center">
+                    <tr>
+                        <th class="text-warning text-center">Trạm</th>
+                        <th class="text-warning text-center">Cảm biến</th>
+                        <th class="text-warning text-center">Địa chỉ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for place in places %}
                         <tr>
-                            <th class="text-warning text-center">Trạm</th>
-                            <th class="text-warning text-center">Cảm biến</th>
-                            <th class="text-warning text-center">Địa chỉ</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for place in places %}
-                            <tr>
-                                <td width="600">
-                                    <div>{{ place.name }}</div>
+                            <td width="60%">
+                                <div>{{ place.name }}</div>
 {#                                    <label class="switch2" style="float: right;">#}
 {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>#}
 {#                                            <div class="slider2"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>#}
 {#                                    </label>#}
-                                    <br><hr width="80%">
-                                    <!-- Rectangular switch -->
+                                <br><hr width="80%">
+                                <!-- Rectangular switch -->
 {#                                        <label class="switch" style="float: right;">#}
 {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-load_main" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"#}
 {#                                                    {% if place.load_main %} checked="checked" {% endif %}#}
@@ -217,49 +218,49 @@
 {#                                            >#}
 {#                                            <div class="slider"><span class="on">Water ON</span><span class="off">Water OFF</span><!--END--></div>#}
 {#                                        </label>#}
-                                        {% for load in place.loads %}
-                                            <label class="switch">
-                                                <input type="checkbox" class="control-load" id="{{ place.id }}-{{ load.name }}" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
-                                                        {% if load.status %} checked="checked" {% endif %}
-                                                        {% if place.status %} disabled {% endif %}
-                                                >
-                                                <div class="slider round"><span class="on">{{ load.name }} ON</span><span class="off">{{ load.name }} OFF</span><!--END--></div>
-                                            </label>
-                                        {% endfor %}
-                                </td>
+                                    {% for load in place.loads %}
+                                        <label class="switch">
+                                            <input type="checkbox" class="control-load" id="{{ place.id }}-{{ load.name }}" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
+                                                    {% if load.status %} checked="checked" {% endif %}
+                                                    {% if place.status %} disabled {% endif %}
+                                            >
+                                            <div class="slider round"><span class="on">{{ load.name }} ON</span><span class="off">{{ load.name }} OFF</span><!--END--></div>
+                                        </label>
+                                    {% endfor %}
+                            </td>
 
-                                <td width="350">
-                                    {% if place.sensors.all %}
-                                        {% for sensor in place.sensors %}
-                                            {% if sensor.type_display %}
-                                                <li style="float: left; padding-right: 10px;"><i>{{ sensor.name }}</i></li>
-    {#                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">#}
-    {#                                            <i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>#}
+                            <td width="35%">
+                                {% if place.sensors.all %}
+                                    {% for sensor in place.sensors %}
+                                        {% if sensor.type_display %}
+                                            <li style="float: left; padding-right: 10px;"><i>{{ sensor.name }} ({{ sensor.unit }})</i></li>
+{#                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">#}
+{#                                            <i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>#}
 
-                                                <input type="text" id="{{ sensor.serial }}" style="float: right; width: 150px; color: #1b1e21" disabled />
-                                                <br>
-                                                <hr width="80%">
-                                            {% else %}
-                                                <li style="float: left; padding-right: 10px;"><i>{{ sensor.name }}</i></li>
-                                                <img id="{{ sensor.serial }}" src="{% static 'images/ledoff-icon.jpg' %}" style="width:100px; filter: brightness(120%); float: right;">
-                                                <br>
-                                                <hr width="80%">
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        Chưa có cảm biến nào
-                                    {% endif %}
+                                            <input type="text" id="{{ sensor.serial }}" style="float: right; width: 100px; color: #1b1e21" disabled />
+                                            <br>
+                                            <hr width="80%">
+                                        {% else %}
+                                            <li style="float: left; padding-right: 10px;"><i>{{ sensor.name }} </i></li>
+                                            <img id="{{ sensor.serial }}" src="{% static 'images/ledoff-icon.jpg' %}" style="width:100px; filter: brightness(120%); float: right;">
+                                            <br>
+                                            <hr width="80%">
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    Chưa có cảm biến nào
+                                {% endif %}
 {#                                    <hr>#}
 {#                                    <button type="button" class="add-device" id="{{ place.id }}" style="float: right;" data-url="{% url 'api_create_device' %}">#}
 {#                                        <span class="glyphicon glyphicon-plus" style="color: black"></span>#}
 {#                                    </button>#}
-                                </td>
-                                <td>{{ place.address }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                            </td>
+                            <td>{{ place.address }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
             {% else %}
                 <h2 style="color: #2f2f2f">Chưa có trạm nào !</h2>
             {% endif %}
