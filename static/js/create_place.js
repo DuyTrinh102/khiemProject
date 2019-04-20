@@ -338,7 +338,7 @@
 	}
 
 	function isMobile() {
-    
+
     if (sessionStorage.desktop) // desktop storage
         return false;
     else if (localStorage.mobile) // mobile storage

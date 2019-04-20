@@ -72,11 +72,9 @@
 		var data_list = data.split("-")
 
 		if (data_list[2] === "a"){
-			$('#' + data_list[0] + "-" + data_list[1]).attr("data-isAlert", "1");
 			$('#' + data_list[0] + "-" + data_list[1]).prop('checked', true);
 			console.log('checked-a');
 		} else {
-			$('#' + data_list[0] + "-" + data_list[1]).attr("data-isAlert", "1");
 			$('#' + data_list[0] + "-" + data_list[1]).prop('checked', false);
 			console.log('checked-b');
 		}

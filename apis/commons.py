@@ -26,7 +26,7 @@ def publish_topic_mqtt(value, user='', password='', topic='publishTopic'):
 		client.connect(broker_address, port=port)
 		client.loop_start()
 		while Connected != True:  # Wait for connection
-			time.sleep(0.1)
+			time.sleep(0.001)
 		client.publish(topic, value)
 		time.sleep(0.1)
 		client.disconnect()
