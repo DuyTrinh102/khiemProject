@@ -156,48 +156,49 @@
         });
 
         $('.control-load').on('change', function () {
-            var place_id = $(this).attr('id');
-            var place_code = $(this).attr('data-place-code');
-            $.fn.csrfSafeMethod = function (method) {
-                // these HTTP methods do not require CSRF protection
-                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            };
+                var place_id = $(this).attr('id');
+                console.log(place_id);
+                var place_code = $(this).attr('data-place-code');
+                $.fn.csrfSafeMethod = function (method) {
+                    // these HTTP methods do not require CSRF protection
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                };
 
-            $.ajaxSetup({
-                beforeSend: function (xhr, settings) {
-                    if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
-                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
-                    }
-                }
-            });
-            $.ajax({
-                'type': 'POST',
-                'url': $('.control-load').attr('data-url'),
-                'data': {
-                    place_id: place_id,
-                    place_code: place_code,
-                    is_checked: $(this).is(":checked")
-                },
-                'success': function (result) {
-                    if (result.result){
-                        // alert(result.message);
-                        if (result.status){
-                            location.reload();
-                        }
-                        if (result.isPub){
-                            var host = 'broker.hivemq.com';
-                            var port = 8000;
-                            var topic = 'publishTopic';
-                            var value = result.message;
-                            __init__(host, port, topic, value);
+                $.ajaxSetup({
+                    beforeSend: function (xhr, settings) {
+                        if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+                            xhr.setRequestHeader('X-CSRFToken', csrftoken);
                         }
                     }
-                    else {
-                        alert(result.message);
-                    }
-                },
-            });
+                });
+                $.ajax({
+                    'type': 'POST',
+                    'url': $('.control-load').attr('data-url'),
+                    'data': {
+                        place_id: place_id,
+                        place_code: place_code,
+                        is_checked: $(this).is(":checked")
+                    },
+                    'success': function (result) {
+                        if (result.result){
+                            // alert(result.message);
+                            if (result.status){
+                                location.reload();
+                            }
+                            if (result.isPub){
+                                var host = 'broker.hivemq.com';
+                                var port = 8000;
+                                var topic = 'publishTopic';
+                                var value = result.message;
+                                __init__(host, port, topic, value);
+                            }
+                        }
+                        else {
+                            alert(result.message);
+                        }
+                    },
+                });
 
         });
         // Control place

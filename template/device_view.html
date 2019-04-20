@@ -183,7 +183,7 @@
     <div class="container-fluid bg-10 text-center">
         <div class="container">
             <div id="dialog-form" title="Thêm trạm của bạn"></div>
-            <button type="button" id="btnCreate" class="create-place" data-url="{% url 'api_create_place' %} ">Thêm trạm</button>
+            <button type="button" id="btnCreate" class="btn btn-info create-place" data-url="{% url 'api_create_place' %} " >Thêm trạm</button>
         </div>
         <div id="users-contain" class="container bg-4 text-center">
             {% if places %}
@@ -220,7 +220,7 @@
 {#                                        </label>#}
                                     {% for load in place.loads %}
                                         <label class="switch">
-                                            <input type="checkbox" class="control-load" id="{{ place.id }}-{{ load.name }}" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
+                                            <input type="checkbox" class="control-load" id="{{ place.place_code }}-{{ load.serial }}" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
                                                     {% if load.status %} checked="checked" {% endif %}
                                                     {% if place.status %} disabled {% endif %}
                                             >

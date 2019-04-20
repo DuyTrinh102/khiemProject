@@ -162,7 +162,7 @@ def api_control_place(request):
             is_checked_bool = True if is_checked == 'true' else False
 
             try:
-                place = request.user.related_place.get(id=place_id)
+                place = request.user.related_place.get(place_code=place_id)
             except Place.DoesNotExist:
                 message_error = "Không tìm thấy nhóm này!"
                 return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
@@ -180,7 +180,7 @@ def api_control_place(request):
                             return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': True}), content_type='application/json')
                         return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': False}), content_type='application/json')
                 else:
-                    load = place.related_loads.filter(name=load_name).first()
+                    load = place.related_loads.filter(serial=load_name).first()
                     if load:
                         load.status = is_checked_bool
                         load.save()
