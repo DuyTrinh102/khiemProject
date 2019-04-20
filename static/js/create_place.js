@@ -187,6 +187,7 @@
                             }
 
                             console.log(result.isPub);
+                            console.log('----');
                             if (result.isPub){
                                 var host = 'broker.hivemq.com';
                                 var port = 8000;
@@ -316,7 +317,7 @@
 	// called when a message arrives
 	function onMessageArrived(message) {
 		var data = JSON.parse(message.payloadString);
-		console.log(data);
+		// console.log(data);
 		var type = data['type'];
 		var value = data['value'];
 

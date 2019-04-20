@@ -68,15 +68,15 @@
 	// called when a message arrives
 	function onMessageArrived(message) {
 		var data = message.payloadString;
-		console.log(data);
+		// console.log(data);
 		var data_list = data.split("-")
 
 		if (data_list[2] === "a"){
 			$('#' + data_list[0] + "-" + data_list[1]).prop('checked', true);
-			console.log('checked-a');
+			// console.log('checked-a');
 		} else {
 			$('#' + data_list[0] + "-" + data_list[1]).prop('checked', false);
-			console.log('checked-b');
+			// console.log('checked-b');
 		}
 
 	}
