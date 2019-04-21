@@ -193,8 +193,11 @@
                                 var port = 8000;
                                 var topic = 'publishTopic';
                                 var value = result.message;
+                                $('#content-body').attr('style', 'filter: blur(10px');
+                                $('#loader').attr('style','display: block');
                                 __init__(host, port, topic, value);
                             }
+
                         }
                         else {
                             alert(result.message);
@@ -300,9 +303,11 @@
 			client.onConnectionLost = onConnectionLost;
 			client.onMessageArrived = onMessageArrived;
 			client.connect(options);
+			$('#content-body').attr('style', 'filter: none');
+			$('#loader').attr('style','display: none');
 		} catch (e) {
 			setTimeout(function () {
-				__init__(host, port);
+				__init__(host, port, topic);
 			}, 10000);
 		}
 	}
@@ -316,26 +321,17 @@
 
 	// called when a message arrives
 	function onMessageArrived(message) {
-		var data = JSON.parse(message.payloadString);
-		// console.log(data);
-		var type = data['type'];
-		var value = data['value'];
-
-		if (type === 1){
-			$('#' + data['serial']).val(value);
-		} else {
-			if (value === 1) {
-				$('#' + data['serial']).attr('src', '/static/images/ledon-icon.png');
-			} else {
-				$('#' + data['serial']).attr('src', '/static/images/ledoff-icon.jpg');
-			}
-		}
 
 	}
 
 	// Connect failed
 	function doFail(message) {
-		location.reload();
+		console.log("Fail1");
+		$('#content-body').attr('style', 'filter: blur(10px');
+		$('#loader').attr('style','display: block');
+		setTimeout(function () {
+				__init__(host, port, topic);
+			}, 10000);
 	}
 
 	function isMobile() {

@@ -8,6 +8,6 @@ urlpatterns = [
 	url(r'^api/', include('apis.urls'))
 ]
 
-admin.site.site_header = 'Khiem Project Administration'
+admin.site.site_header = 'IoT Project Administration'
 admin.site.index_title = 'IoT Project'
-admin.site.site_title = 'Nguyen Tien Khiem'
+admin.site.site_title = 'Administration Page'

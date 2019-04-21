@@ -46,15 +46,17 @@
 				onSuccess: function () {
 					client.subscribe(topic);
 				},
-				onFailure: doFail
+				onFailure: function () {
+					doFail(host, port, topic)
+				}
 			};
 			client.onConnectionLost = onConnectionLost;
 			client.onMessageArrived = onMessageArrived;
 			client.connect(options);
+			$('#content-body').attr('style', 'filter: none');
+			$('#loader').attr('style','display: none');
 		} catch (e) {
-			setTimeout(function () {
-				__init__(host, port);
-			}, 10000);
+			console.log(e);
 		}
 	}
 
@@ -84,7 +86,12 @@
 	}
 
 	// Connect failed
-	function doFail(message) {
-		location.reload();
+	function doFail(host, port, topic) {
+		console.log("Fail2");
+		$('#content-body').attr('style', 'filter: blur(10px');
+		$('#loader').attr('style','display: block');
+		setTimeout(function () {
+				__init__(host, port, topic);
+			}, 5000);
 	}
 })(jQuery);

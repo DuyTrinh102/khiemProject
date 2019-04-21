@@ -1,6 +1,5 @@
 (function ($) {
 	'use strict';
-
 	$(document).ready(function () {
 		try {
 			var host = 'broker.hivemq.com';
@@ -36,7 +35,7 @@
 				clearTimeout(tmp_timeout);
 			}
 			var clientID = uuid('hex');
-			var client = new Paho.MQTT.Client(host, Number(port), clientID);
+			var clientPub = new Paho.MQTT.Client(host, Number(port), clientID);
 			var options = {
 				useSSL: false,
 				timeout: 60,
@@ -44,16 +43,21 @@
 				// password: 'XRr8MM9m5Hbt',
 				cleanSession: true,
 				onSuccess: function () {
-					client.subscribe(topic);
+					clientPub.subscribe(topic);
 				},
-				onFailure: doFail
+				onFailure: function () {
+					doFail(host, port, topic)
+				}
 			};
-			client.onConnectionLost = onConnectionLost;
-			client.onMessageArrived = onMessageArrived;
-			client.connect(options);
+			clientPub.onConnectionLost = onConnectionLost;
+			clientPub.onMessageArrived = onMessageArrived;
+			var pubClient = clientPub.connect(options);
+			$('#content-body').attr('style', 'filter: none');
+			$('#loader').attr('style','display: none');
 		} catch (e) {
+			console.log(e);
 			setTimeout(function () {
-				__init__(host, port);
+				__init__(host, port, topic);
 			}, 10000);
 		}
 	}
@@ -82,7 +86,12 @@
 	}
 
 	// Connect failed
-	function doFail(message) {
-		location.reload();
+	function doFail(host, port, topic) {
+		console.log("Fail3");
+		$('#content-body').attr('style', 'filter: blur(10px');
+		$('#loader').attr('style','display: block');
+		setTimeout(function () {
+				__init__(host, port, topic);
+			}, 5000);
 	}
 })(jQuery);

@@ -7,10 +7,11 @@
     <script type="application/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/mqtt/mqttws31.js' %}"></script>
-    <script type="application/javascript" src="{% static 'js/create_place.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/mqtt_realtime.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/mqtt_load.js' %}"></script>
+    <script type="application/javascript" src="{% static 'js/create_place.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/loader.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -180,7 +181,9 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid bg-10 text-center">
+
+    <div id="loader"></div>
+    <div class="container-fluid bg-10 text-center" style="filter: blur(10px)" id="content-body">
         <div class="container">
             <div id="dialog-form" title="Thêm trạm của bạn"></div>
             <button type="button" id="btnCreate" class="btn btn-info create-place" data-url="{% url 'api_create_place' %} " >Thêm trạm</button>
@@ -208,7 +211,7 @@
 {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>#}
 {#                                            <div class="slider2"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>#}
 {#                                    </label>#}
-                                <br><hr width="80%">
+                                <br><hr width="60%">
                                 <!-- Rectangular switch -->
 {#                                        <label class="switch" style="float: right;">#}
 {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-load_main" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"#}
@@ -229,23 +232,25 @@
                                     {% endfor %}
                             </td>
 
-                            <td width="35%">
+                            <td width="30%">
                                 {% if place.sensors.all %}
                                     {% for sensor in place.sensors %}
                                         {% if sensor.type_display %}
-                                            <li style="float: left; padding-right: 10px;"><i>{{ sensor.name }} ({{ sensor.unit }})</i></li>
+                                            <li style="float: left;"><i>{{ sensor.name }} ({{ sensor.unit }})</i>
 {#                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">#}
 {#                                            <i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>#}
 
-                                            <input type="text" id="{{ sensor.serial }}" style="float: right; width: 100px; color: #1b1e21" disabled />
+                                            </li>
+                                            <input type="text" id="{{ sensor.serial }}" style="float: right; width: 100px; color: #1b1e21; display: inline-block" disabled />
                                             <br>
-                                            <hr width="80%">
                                         {% else %}
-                                            <li style="float: left; padding-right: 10px;"><i>{{ sensor.name }} </i></li>
-                                            <img id="{{ sensor.serial }}" src="{% static 'images/ledoff-icon.jpg' %}" style="width:100px; filter: brightness(120%); float: right;">
-                                            <br>
-                                            <hr width="80%">
+                                            <li style="float: left;"><i>{{ sensor.name }} </i>
+                                            </li>
+                                            <img id="{{ sensor.serial }}" src="{% static 'images/ledoff-icon.jpg' %}" alt=".." style="width: 40%;filter: brightness(120%); position: center; display: inline-block;">
                                         {% endif %}
+                                        <br>
+                                        <hr width="50%" style="position: center; padding-top: 5px;">
+
                                     {% endfor %}
                                 {% else %}
                                     Chưa có cảm biến nào
