@@ -183,7 +183,7 @@
 {% block body %}
 
     <div id="loader"></div>
-    <div class="container-fluid bg-10 text-center" style="filter: blur(10px)" id="content-body">
+    <div class="container-fluid bg-10 text-center" style="filter: blur(10px); display: none;" id="content-body">
         <div class="container">
             <div id="dialog-form" title="Thêm trạm của bạn"></div>
             <button type="button" id="btnCreate" class="btn btn-info create-place" data-url="{% url 'api_create_place' %} " >Thêm trạm</button>

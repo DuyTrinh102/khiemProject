@@ -328,10 +328,11 @@
 	function doFail(message) {
 		console.log("Fail1");
 		$('#content-body').attr('style', 'filter: blur(10px');
+		$('#content-body').attr('disabled', true);
 		$('#loader').attr('style','display: block');
 		setTimeout(function () {
 				__init__(host, port, topic);
-			}, 10000);
+			}, 1000);
 	}
 
 	function isMobile() {

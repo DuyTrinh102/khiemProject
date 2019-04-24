@@ -89,9 +89,10 @@
 	function doFail(host, port, topic) {
 		console.log("Fail3");
 		$('#content-body').attr('style', 'filter: blur(10px');
+		$('#content-body').attr('disabled', true);
 		$('#loader').attr('style','display: block');
 		setTimeout(function () {
 				__init__(host, port, topic);
-			}, 5000);
+			}, 1000);
 	}
 })(jQuery);
