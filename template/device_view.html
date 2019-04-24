@@ -18,7 +18,7 @@
         .switch {
             position: relative;
             display: inline-block;
-            width: 90px;
+            width: 80px;
             height: 34px;
         }
 
@@ -205,7 +205,7 @@
                     <tbody>
                     {% for place in places %}
                         <tr>
-                            <td width="60%">
+                            <td width="40%">
                                 <div>{{ place.name }}</div>
 {#                                    <label class="switch2" style="float: right;">#}
 {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>#}
@@ -222,17 +222,22 @@
 {#                                            <div class="slider"><span class="on">Water ON</span><span class="off">Water OFF</span><!--END--></div>#}
 {#                                        </label>#}
                                     {% for load in place.loads %}
+                                        <li>
                                         <label class="switch">
                                             <input type="checkbox" class="control-load" id="{{ place.place_code }}-{{ load.serial }}" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
                                                     {% if load.status %} checked="checked" {% endif %}
                                                     {% if place.status %} disabled {% endif %}
                                             >
                                             <div class="slider round"><span class="on">{{ load.name }} ON</span><span class="off">{{ load.name }} OFF</span><!--END--></div>
+
                                         </label>
+                                        <img id="{{ place.place_code }}-{{ load.serial }}-status" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px;filter: brightness(120%); position: relative; display: inline-block;">
+                                        </li>
+                                        <br><br>
                                     {% endfor %}
                             </td>
 
-                            <td width="30%">
+                            <td width="40%">
                                 {% if place.sensors.all %}
                                     {% for sensor in place.sensors %}
                                         {% if sensor.type_display %}
@@ -241,12 +246,12 @@
 {#                                            <i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>#}
 
                                             </li>
-                                            <input type="text" id="{{ sensor.serial }}" style="float: right; width: 100px; color: #1b1e21; display: inline-block" disabled />
+                                            <input type="text" id="{{ sensor.serial }}" style="float: right; width: 120px; color: #1b1e21; display: inline-block" disabled />
                                             <br>
                                         {% else %}
                                             <li style="float: left;"><i>{{ sensor.name }} </i>
                                             </li>
-                                            <img id="{{ sensor.serial }}" src="{% static 'images/ledoff-icon.jpg' %}" alt=".." style="width: 40%;filter: brightness(120%); position: center; display: inline-block;">
+                                            <img id="{{ sensor.serial }}" src="{% static 'images/yesBg.png' %}" alt=".." style="width: 120px;filter: brightness(120%); position: center; display: inline-block;">
                                         {% endif %}
                                         <br>
                                         <hr width="50%" style="position: center; padding-top: 5px;">

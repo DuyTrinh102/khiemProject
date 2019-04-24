@@ -5,7 +5,7 @@
 		try {
 			var host = 'broker.hivemq.com';
 			var port = 8000;
-			var topic = 'khiemtopic';
+			var topic = 'subscribeTopic';
 			__init__(host, port, topic);
 		} catch (e) {
 		}
@@ -77,9 +77,9 @@
 			$('#' + data['serial']).val(value);
 		} else {
 			if (value === 1) {
-				$('#' + data['serial']).attr('src', '/static/images/ledon-icon.png');
+				$('#' + data['serial']).attr('src', '/static/images/warningBg.png');
 			} else {
-				$('#' + data['serial']).attr('src', '/static/images/ledoff-icon.jpg');
+				$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
 			}
 		}
 
