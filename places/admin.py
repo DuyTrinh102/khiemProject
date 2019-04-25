@@ -20,6 +20,7 @@ class SensorInlines(admin.TabularInline):
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
 	list_display = ('name', 'address', 'owner')
+	fields = ('place_code', 'name', 'address', 'owner')
 	inlines = [
 		LoadInlines,
 		SensorInlines
