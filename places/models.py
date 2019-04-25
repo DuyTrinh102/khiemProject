@@ -31,7 +31,7 @@ class Place(models.Model):
 	status = models.BooleanField(default=False, choices=STATUS_CONTROL)
 
 	def __unicode__(self):
-		return unicode("{}-{}".format(self.name, self.owner.username))
+		return unicode("{}".format(self.name))
 
 
 class Load(models.Model):
