@@ -69,19 +69,26 @@
 
 	// called when a message arrives
 	function onMessageArrived(message) {
-		var data = JSON.parse(message.payloadString);
-		var type = data['type'];
-		var value = data['value'];
+		var data;
+		try {
+			data = JSON.parse(message.payloadString);
+			var type = data['type'];
+			var value = data['value'];
 
-		if (type === 1){
-			$('#' + data['serial']).val(value);
-		} else {
-			if (value === 1) {
-				$('#' + data['serial']).attr('src', '/static/images/warningBg.png');
+			if (type === 1){
+				$('#' + data['serial']).val(value);
 			} else {
-				$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
+				if (value === 1) {
+					$('#' + data['serial']).attr('src', '/static/images/warningBg.png');
+				} else {
+					$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
+				}
 			}
+		} catch (e) {
+			
 		}
+
+
 
 	}
 
