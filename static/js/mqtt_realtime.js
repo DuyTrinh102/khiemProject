@@ -69,7 +69,7 @@
 
 	// called when a message arrives
 	function onMessageArrived(message) {
-		var data;
+		var data = message.payloadString;
 		try {
 			data = JSON.parse(message.payloadString);
 			var type = data['type'];
@@ -85,7 +85,23 @@
 				}
 			}
 		} catch (e) {
-
+			var data_list = data.split("-");
+			if (data_list.length === 3) {
+				if (data_list[2] === "status") {
+					var data_status = data_list[1].split(";");
+					console.log(data_status);
+					var i;
+					for (i = 0; i < data_status.length; i++) {
+						var status = data_status[i].split(":");
+						if (status[1] === "a") {
+							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledon-icon.jpg');
+							console.log('AAAAAAAAAAa')
+						} else {
+							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledoff-icon.png');
+						}
+					}
+				}
+			}
 		}
 
 

@@ -74,30 +74,17 @@
 		var data = message.payloadString;
 		// console.log(data);
 		var data_list = data.split("-");
-		if (data_list[2] === "control") {
-			var control = data_list[1].split(":");
-			if (control[1] === "a") {
-				$('#' + data_list[0] + "-" + control[0]).prop('checked', true);
+		if (data_list.length === 3) {
+			if (data_list[2] === "control") {
+				var control = data_list[1].split(":");
+				if (control[1] === "a") {
+					$('#' + data_list[0] + "-" + control[0]).prop('checked', true);
 
-			} else {
-				$('#' + data_list[0] + "-" + control[0]).prop('checked', false);
-			}
-		} else if (data_list[2] === "status") {
-			var data_status = data_list[1].split(";");
-			console.log(data_status);
-			var i;
-			for (i = 0; i < data_status.length; i++){
-				var status = data_status[i].split(":");
-				if (status[1] === "a") {
-					$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledon-icon.jpg');
-					console.log('AAAAAAAAAAa')
 				} else {
-					$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledoff-icon.png');
+					$('#' + data_list[0] + "-" + control[0]).prop('checked', false);
 				}
 			}
-
 		}
-
 	}
 
 	// Connect failed
