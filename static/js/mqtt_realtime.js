@@ -78,14 +78,14 @@
 			if (type === 1){
 				$('#' + data['serial']).val(value);
 			} else {
-				if (value === 1) {
+				if (value === 0) {
 					$('#' + data['serial']).attr('src', '/static/images/warningBg.png');
 				} else {
 					$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
 				}
 			}
 		} catch (e) {
-			
+
 		}
 
 
