@@ -198,7 +198,7 @@ def api_update_load(request):
     try:
         place_id, load_control, stt = request.POST.get('data').split('-')
         try:
-            place = request.user.related_place.get(place_code=place_id)
+            place = Place.objects.get(place_code=place_id)
         except Place.DoesNotExist:
             message_error = "Không tìm thấy nhóm này!"
             return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
