@@ -192,7 +192,8 @@ def api_control_place(request):
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 
-@csrf_exempt
+@api_view(['POST'])
+@permission_classes((permissions.BasePermission,))
 def api_update_load(request):
     try:
         place_id, load_control, stt = request.POST.get('data').split('-')
