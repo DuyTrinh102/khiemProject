@@ -189,8 +189,8 @@
                             console.log(result.isPub);
                             console.log('----');
                             if (result.isPub){
-                                var host = 'broker.hivemq.com';
-                                var port = 8000;
+                                var host = 'm16.cloudmqtt.com';
+                                var port = 39932;
                                 var topic = 'publishTopic';
                                 var value = result.message;
                                 $('#content-body').attr('style', 'filter: blur(10px');
@@ -292,8 +292,8 @@
 			var options = {
 				useSSL: false,
 				timeout: 60,
-				// userName: 'tnuxyfho',
-				// password: 'XRr8MM9m5Hbt',
+				userName: 'vwlfeugw',
+				password: 'CHom7E-WyGQ0',
 				cleanSession: true,
 				onSuccess: function () {
 					client.send(topic, value);

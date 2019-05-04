@@ -3,8 +3,8 @@
 
 	$(document).ready(function () {
 		try {
-			var host = 'broker.hivemq.com';
-			var port = 8000;
+			var host = 'm16.cloudmqtt.com';
+			var port = 39928;
 			var topic = 'subscribeTopic';
 			__init__(host, port, topic);
 		} catch (e) {
@@ -38,10 +38,10 @@
 			var clientID = uuid('hex');
 			var client = new Paho.MQTT.Client(host, Number(port), clientID);
 			var options = {
-				useSSL: false,
+				useSSL: true,
 				timeout: 60,
-				// userName: 'tnuxyfho',
-				// password: 'XRr8MM9m5Hbt',
+				userName: 'tnuxyfho',
+				password: 'JrFzY67tUXXT',
 				cleanSession: true,
 				onSuccess: function () {
 					client.subscribe(topic);
