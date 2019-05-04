@@ -209,7 +209,7 @@ def api_update_load(request):
             if load:
                 load.status = is_checked_data
                 load.save()
-            return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': 'Success', 'status': False}), content_type='application/json')
+            return HttpResponse(json.dumps({'result': True, 'message': 'Success'}), content_type='application/json')
     except Exception as e:
         message_error = str(e)
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
