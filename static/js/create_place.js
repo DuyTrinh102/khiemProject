@@ -21,6 +21,21 @@
             '<option value="NTU">NTU</option>\n' +
             '</select>\n' +
             '</form>';
+        try {
+            var host = 'm16.cloudmqtt.com';
+            var port = 39932;
+            var topic = 'publishTopic';
+            $('#content-body').attr('style', 'filter: blur(10px');
+            $('#loader').attr('style', 'display: block');
+            var clientID = uuid('hex');
+            var client = new Paho.MQTT.Client(host, Number(port), clientID);
+            __init__(host, port, topic, client);
+        } catch (e) {
+            console.log(e);
+            $('#content-body').attr('style', 'filter: blur(10px');
+            $('#loader').attr('style', 'display: block');
+        }
+
         $('#dialog-form').html(form).dialog({
             modal: true,
             autoOpen: false,
@@ -189,13 +204,8 @@
                             console.log(result.isPub);
                             console.log('----');
                             if (result.isPub){
-                                var host = 'm16.cloudmqtt.com';
-                                var port = 39932;
-                                var topic = 'publishTopic';
                                 var value = result.message;
-                                $('#content-body').attr('style', 'filter: blur(10px');
-                                $('#loader').attr('style','display: block');
-                                __init__(host, port, topic, value);
+                                client.send(topic, value);
                             }
 
                         }
@@ -280,34 +290,36 @@
 
 
 	// called when the client connects
-	function __init__(host, port, topic, value) {
+	function __init__(host, port, topic, client) {
 		// Once a connection has been made, make a subscription and send a message.
 		var tmp_timeout;
 		try {
 			if (tmp_timeout) {
 				clearTimeout(tmp_timeout);
 			}
-			var clientID = uuid('hex');
-			var client = new Paho.MQTT.Client(host, Number(port), clientID);
 			var options = {
-				useSSL: false,
+				useSSL: true,
 				timeout: 60,
 				userName: 'vwlfeugw',
-				password: 'CHom7E-WyGQ0',
+				password: 'DUpHC0CbRzrX',
 				cleanSession: true,
 				onSuccess: function () {
-					client.send(topic, value);
+					// client.send(topic, value);
+                    client.subscribe('subscribeTopic');
+                    console.log('Connect successfully');
+                    $('#content-body').attr('style', 'filter: none');
+			        $('#loader').attr('style','display: none');
 				},
-				onFailure: doFail
+				onFailure: function () {
+					doFail(host, port, topic, value)
+				}
 			};
 			client.onConnectionLost = onConnectionLost;
 			client.onMessageArrived = onMessageArrived;
 			client.connect(options);
-			$('#content-body').attr('style', 'filter: none');
-			$('#loader').attr('style','display: none');
 		} catch (e) {
 			setTimeout(function () {
-				__init__(host, port, topic);
+				__init__(host, port, topic, client);
 			}, 10000);
 		}
 	}
@@ -321,17 +333,50 @@
 
 	// called when a message arrives
 	function onMessageArrived(message) {
+        var data = message.payloadString;
+		try {
+			data = JSON.parse(message.payloadString);
+			var type = data['type'];
+			var value = data['value'];
 
+			if (type === 1){
+				$('#' + data['serial']).val(value);
+			} else {
+				if (value === 0) {
+					$('#' + data['serial']).attr('src', '/static/images/warningBg.png');
+				} else {
+					$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
+				}
+			}
+		} catch (e) {
+			var data_list = data.split("-");
+			if (data_list.length === 3) {
+				if (data_list[2] === "status") {
+					var data_status = data_list[1].split(";");
+					console.log(data_status);
+					var i;
+					for (i = 0; i < data_status.length; i++) {
+						var status = data_status[i].split(":");
+						if (status[1] === "a") {
+							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledon-icon.jpg');
+							console.log('AAAAAAAAAAa')
+						} else {
+							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledoff-icon.png');
+						}
+					}
+				}
+			}
+		}
 	}
 
 	// Connect failed
-	function doFail(message) {
+	function doFail(host, port, topic, value) {
 		console.log("Fail1");
 		$('#content-body').attr('style', 'filter: blur(10px');
 		$('#content-body').attr('disabled', true);
 		$('#loader').attr('style','display: block');
 		setTimeout(function () {
-				__init__(host, port, topic);
+				__init__(host, port, topic, value);
 			}, 1000);
 	}
 

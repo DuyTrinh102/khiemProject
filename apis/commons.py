@@ -15,17 +15,17 @@ def on_connect(client, userdata, flags, rc):
 		return
 
 
-def publish_topic_mqtt(value, user='', password='', topic='publishTopic'):
+def publish_topic_mqtt(value, user='tnuxyfho', password='JrFzY67tUXXT', topic='publishTopic'):
 	global Connected
 	try:
-		broker_address = "broker.hivemq.com"
-		port = 8000
+		broker_address = "m16.cloudmqtt.com"
+		port = 39928
 		client = mqtt.Client(client_id="{client_id}".format(client_id=uuid.uuid1()), transport='websockets')
-		# client.username_pw_set(user, password=password)
+		client.username_pw_set(user, password=password)
 		client.on_connect = on_connect
 		client.connect(broker_address, port=port)
 		client.loop_start()
-		while Connected != True:  # Wait for connection
+		while Connected != True:
 			time.sleep(0.001)
 		client.publish(topic, value)
 		time.sleep(0.1)

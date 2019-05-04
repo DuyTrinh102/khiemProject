@@ -181,8 +181,10 @@ def api_control_place(request):
                         return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': False}), content_type='application/json')
                 else:
                     load = place.related_loads.filter(serial=load_name).first()
+                    is_checked_data = 'a' if not load.status else 'b'
                     if load:
-                        load.status = is_checked_bool
+                        print not load.status
+                        load.status = not load.status
                         load.save()
                     if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')

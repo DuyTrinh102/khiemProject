@@ -36,6 +36,7 @@
 				clearTimeout(tmp_timeout);
 			}
 			var clientID = uuid('hex');
+			console.log(clientID);
 			var client = new Paho.MQTT.Client(host, Number(port), clientID);
 			var options = {
 				useSSL: true,
@@ -103,9 +104,6 @@
 				}
 			}
 		}
-
-
-
 	}
 
 	// Connect failed
