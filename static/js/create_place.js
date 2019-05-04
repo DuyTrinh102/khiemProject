@@ -155,7 +155,7 @@
             });
         });
 
-        $('.control-load').on('change', function () {
+        $('.control-load').on('click', function () {
                 var place_id = $(this).attr('id');
                 var place_code = $(this).attr('data-place-code');
                 $.fn.csrfSafeMethod = function (method) {

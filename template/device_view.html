@@ -224,11 +224,7 @@
                                     {% for load in place.loads %}
                                         <li>
                                         <label class="switch">
-                                            <input type="checkbox" class="control-load" id="{{ place.place_code }}-{{ load.serial }}" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
-                                                    {% if load.status %} checked="checked" {% endif %}
-                                                    {% if place.status %} disabled {% endif %}
-                                            >
-                                            <div class="slider round"><span class="on">{{ load.name }} ON</span><span class="off">{{ load.name }} OFF</span><!--END--></div>
+                                            <button type="button" class="btn btn-warning control-load" id="{{ place.place_code }}-{{ load.serial }}" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
 
                                         </label>
                                         <img id="{{ place.place_code }}-{{ load.serial }}-status" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px;filter: brightness(120%); position: relative; display: inline-block;">
