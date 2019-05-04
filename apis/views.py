@@ -183,13 +183,34 @@ def api_control_place(request):
                     load = place.related_loads.filter(serial=load_name).first()
                     is_checked_data = 'a' if not load.status else 'b'
                     if load:
-                        print not load.status
                         load.status = not load.status
                         load.save()
                     if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
                     return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data), 'status': False}), content_type='application/json')
                 message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
+    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+
+
+@csrf_exempt
+def api_update_load(request):
+    try:
+        place_id, load_control, stt = request.POST.get('data').split('-')
+        try:
+            place = request.user.related_place.get(place_code=place_id)
+        except Place.DoesNotExist:
+            message_error = "Không tìm thấy nhóm này!"
+            return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+        else:
+            load_name, load_data = load_control.split(':')
+            load = place.related_loads.filter(serial=load_name).first()
+            is_checked_data = True if load_data == 'a' else False
+            if load:
+                load.status = is_checked_data
+                load.save()
+            return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': 'Success', 'status': False}), content_type='application/json')
+    except Exception as e:
+        message_error = str(e)
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 

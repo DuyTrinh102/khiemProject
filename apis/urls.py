@@ -16,4 +16,5 @@ urlpatterns = [
 	url(r'^device/show/chart/', views.view_show_chart, name='view_show_chart'),
 	url(r'^device/show/payment/', views.view_show_payment, name='view_show_payment'),
 	url(r'^device/measure/update/', views.api_device_measure_update, name='api_device_measure_update'),
+	url(r'^device/load/update/', views.api_update_load, name='api_update_load'),
 ]
