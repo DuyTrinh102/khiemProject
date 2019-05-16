@@ -225,7 +225,7 @@
                                             <button type="button" class="btn btn-warning control-load" id="{{ place.place_code }}-{{ load.serial }}" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
 
                                         </label>
-                                        <img id="{{ place.place_code }}-{{ load.serial }}-status" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px;filter: brightness(120%); position: relative; display: inline-block;">
+                                        <img id="{{ place.place_code }}-{{ load.serial }}-status" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px;filter: brightness(120%); float: right; display: inline-block;">
                                         </li>
                                         <br>
                                     {% endfor %}
