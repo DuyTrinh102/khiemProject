@@ -3,9 +3,9 @@
 
 	$(document).ready(function () {
 		try {
-			var host = 'm16.cloudmqtt.com';
-			var port = 39928;
-			var topic = 'subscribeTopic';
+			var host = 'broker.hivemq.com';
+			var port = 8000;
+			var topic = 'khiemtopic';
 			__init__(host, port, topic);
 		} catch (e) {
 		}
@@ -36,28 +36,25 @@
 				clearTimeout(tmp_timeout);
 			}
 			var clientID = uuid('hex');
-			console.log(clientID);
 			var client = new Paho.MQTT.Client(host, Number(port), clientID);
 			var options = {
-				useSSL: true,
+				useSSL: false,
 				timeout: 60,
-				userName: 'tnuxyfho',
-				password: 'JrFzY67tUXXT',
+				// userName: 'tnuxyfho',
+				// password: 'XRr8MM9m5Hbt',
 				cleanSession: true,
 				onSuccess: function () {
 					client.subscribe(topic);
 				},
-				onFailure: function () {
-					doFail(host, port, topic)
-				}
+				onFailure: doFail
 			};
 			client.onConnectionLost = onConnectionLost;
 			client.onMessageArrived = onMessageArrived;
 			client.connect(options);
-			$('#content-body').attr('style', 'filter: none');
-			$('#loader').attr('style','display: none');
 		} catch (e) {
-			console.log(e);
+			setTimeout(function () {
+				__init__(host, port);
+			}, 10000);
 		}
 	}
 
@@ -70,50 +67,25 @@
 
 	// called when a message arrives
 	function onMessageArrived(message) {
-		var data = message.payloadString;
-		try {
-			data = JSON.parse(message.payloadString);
-			var type = data['type'];
-			var value = data['value'];
+		var data = JSON.parse(message.payloadString);
+		console.log(data);
+		var type = data['type'];
+		var value = data['value'];
 
-			if (type === 1){
-				$('#' + data['serial']).val(value);
+		if (type === 1){
+			$('#' + data['serial']).val(value);
+		} else {
+			if (value === 1) {
+				$('#' + data['serial']).attr('src', '/static/images/ledon-icon.png');
 			} else {
-				if (value === 0) {
-					$('#' + data['serial']).attr('src', '/static/images/warningBg.png');
-				} else {
-					$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
-				}
-			}
-		} catch (e) {
-			var data_list = data.split("-");
-			if (data_list.length === 3) {
-				if (data_list[2] === "status") {
-					var data_status = data_list[1].split(";");
-					console.log(data_status);
-					var i;
-					for (i = 0; i < data_status.length; i++) {
-						var status = data_status[i].split(":");
-						if (status[1] === "a") {
-							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledon-icon.jpg');
-							console.log('AAAAAAAAAAa')
-						} else {
-							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledoff-icon.png');
-						}
-					}
-				}
+				$('#' + data['serial']).attr('src', '/static/images/ledoff-icon.jpg');
 			}
 		}
+
 	}
 
 	// Connect failed
-	function doFail(host, port, topic) {
-		console.log("Fail2");
-		$('#content-body').attr('style', 'filter: blur(10px');
-		$('#content-body').attr('disabled', true);
-		$('#loader').attr('style','display: block');
-		setTimeout(function () {
-				__init__(host, port, topic);
-			}, 1000);
+	function doFail(message) {
+		alert(message.errorMessage);
 	}
 })(jQuery);
