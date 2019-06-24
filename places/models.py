@@ -16,6 +16,11 @@ TYPE_DISPLAY = (
 	(1, 'Display')
 )
 
+TYPE_LOAD = (
+	(0, 'Normal'),
+	(1, 'Secure')
+)
+
 
 class UnitPrice(models.Model):
 	user = models.ForeignKey(User, related_name="unit_price")
@@ -31,7 +36,7 @@ class Place(models.Model):
 	status = models.BooleanField(default=False, choices=STATUS_CONTROL)
 
 	def __unicode__(self):
-		return unicode("{}-{}".format(self.name, self.owner.username))
+		return unicode("{}".format(self.name))
 
 
 class Load(models.Model):
@@ -39,6 +44,7 @@ class Load(models.Model):
 	name = models.CharField(max_length=30)
 	serial = models.CharField(max_length=30, unique=True)
 	status = models.BooleanField(default=False)
+	typeLoad = models.PositiveIntegerField(default=0, choices=TYPE_LOAD)
 
 
 class Sensor(models.Model):

@@ -23,6 +23,8 @@ from places.models import Place, LOAD_LIST, Load, UnitPrice
 
 
 def home_page(request):
+    if request.user.is_authenticated:
+        return redirect('view_get_devices_places')
     return render(request, 'home.html')
 
 
@@ -81,7 +83,7 @@ def change_password(request):
 def application_main(request):
     if request.user.is_authenticated:
         return render(request, 'application_main.html', {'user': request.user})
-    return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
+    return render(request, 'home.html')
 
 
 def view_get_devices_places(request):
@@ -162,7 +164,7 @@ def api_control_place(request):
             is_checked_bool = True if is_checked == 'true' else False
 
             try:
-                place = request.user.related_place.get(id=place_id)
+                place = request.user.related_place.get(place_code=place_id)
             except Place.DoesNotExist:
                 message_error = "Không tìm thấy nhóm này!"
                 return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
@@ -180,14 +182,39 @@ def api_control_place(request):
                             return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': True}), content_type='application/json')
                         return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': False}), content_type='application/json')
                 else:
-                    load = place.related_loads.filter(name=load_name).first()
+                    load = place.related_loads.filter(serial=load_name).first()
+                    is_checked_data = 'a' if not load.status else 'b'
                     if load:
-                        load.status = is_checked_bool
+                        load.status = not load.status
                         load.save()
-                    if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
-                        return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': False}), content_type='application/json')
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
+                        return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
+                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data), 'status': False}), content_type='application/json')
                 message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
-    return HttpResponse(json.dumps({'result': True, 'message': message_error}), content_type='application/json')
+    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+
+
+@api_view(['POST'])
+@permission_classes((permissions.BasePermission,))
+def api_update_load(request):
+    try:
+        place_id, load_control, stt = request.POST.get('data').split('-')
+        try:
+            place = Place.objects.get(place_code=place_id)
+        except Place.DoesNotExist:
+            message_error = "Không tìm thấy nhóm này!"
+            return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+        else:
+            load_name, load_data = load_control.split(':')
+            load = place.related_loads.filter(serial=load_name).first()
+            is_checked_data = True if load_data == 'a' else False
+            if load:
+                load.status = is_checked_data
+                load.save()
+            return HttpResponse(json.dumps({'result': True, 'message': 'Success'}), content_type='application/json')
+    except Exception as e:
+        message_error = str(e)
+    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 
 @csrf_exempt

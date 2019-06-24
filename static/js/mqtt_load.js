@@ -1,10 +1,9 @@
 (function ($) {
 	'use strict';
-
 	$(document).ready(function () {
 		try {
-			var host = 'broker.hivemq.com';
-			var port = 8000;
+			var host = 'm16.cloudmqtt.com';
+			var port = 39932;
 			var topic = 'publishTopic';
 			__init__(host, port, topic);
 		} catch (e) {
@@ -36,24 +35,29 @@
 				clearTimeout(tmp_timeout);
 			}
 			var clientID = uuid('hex');
-			var client = new Paho.MQTT.Client(host, Number(port), clientID);
+			var clientPub = new Paho.MQTT.Client(host, Number(port), clientID);
 			var options = {
-				useSSL: false,
+				useSSL: true,
 				timeout: 60,
-				// userName: 'tnuxyfho',
-				// password: 'XRr8MM9m5Hbt',
+				userName: 'vwlfeugw',
+				password: 'CHom7E-WyGQ0',
 				cleanSession: true,
 				onSuccess: function () {
-					client.subscribe(topic);
+					clientPub.subscribe(topic);
 				},
-				onFailure: doFail
+				onFailure: function () {
+					doFail(host, port, topic)
+				}
 			};
-			client.onConnectionLost = onConnectionLost;
-			client.onMessageArrived = onMessageArrived;
-			client.connect(options);
+			clientPub.onConnectionLost = onConnectionLost;
+			clientPub.onMessageArrived = onMessageArrived;
+			clientPub.connect(options);
+			$('#content-body').attr('style', 'filter: none');
+			$('#loader').attr('style','display: none');
 		} catch (e) {
+			console.log(e);
 			setTimeout(function () {
-				__init__(host, port);
+				__init__(host, port, topic);
 			}, 10000);
 		}
 	}
@@ -68,22 +72,29 @@
 	// called when a message arrives
 	function onMessageArrived(message) {
 		var data = message.payloadString;
-		console.log(data);
+		// console.log(data);
+		var data_list = data.split("-");
+		if (data_list.length === 3) {
+			if (data_list[2] === "control") {
+				var control = data_list[1].split(":");
+				if (control[1] === "a") {
+					$('#' + data_list[0] + "-" + control[0]).prop('checked', true);
 
-		// if (type === 1){
-		// 	$('#' + data['serial']).val(value);
-		// } else {
-		// 	if (value === 1) {
-		// 		$('#' + data['serial']).attr('src', '/static/images/ledon-icon.png');
-		// 	} else {
-		// 		$('#' + data['serial']).attr('src', '/static/images/ledoff-icon.jpg');
-		// 	}
-		// }
-
+				} else {
+					$('#' + data_list[0] + "-" + control[0]).prop('checked', false);
+				}
+			}
+		}
 	}
 
 	// Connect failed
-	function doFail(message) {
-		alert(message.errorMessage);
+	function doFail(host, port, topic) {
+		console.log("Fail3");
+		$('#content-body').attr('style', 'filter: blur(10px');
+		$('#content-body').attr('disabled', true);
+		$('#loader').attr('style','display: block');
+		setTimeout(function () {
+				__init__(host, port, topic);
+			}, 1000);
 	}
 })(jQuery);

@@ -7,7 +7,7 @@ from .models import Place, Load, Sensor
 
 class LoadInlines(admin.TabularInline):
 	model = Load
-	fields = ('name', 'serial', 'status')
+	fields = ('name', 'serial', 'typeLoad', 'status')
 	extra = 0
 
 
@@ -20,6 +20,7 @@ class SensorInlines(admin.TabularInline):
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
 	list_display = ('name', 'address', 'owner')
+	fields = ('place_code', 'name', 'address', 'owner')
 	inlines = [
 		LoadInlines,
 		SensorInlines
