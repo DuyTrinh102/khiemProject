@@ -57,7 +57,6 @@ def login_account(request):
 
 
 def logout_account(request):
-    print request.META
     if request.user.is_authenticated:
         logout(request)
         return redirect('home_page')
@@ -274,7 +273,6 @@ def api_config_price(request):
     else:
         if request.is_ajax():
             value = request.POST.get('value')
-            print value
             if not value.isdigit():
                 message_error = 'Bạn phải nhập kiểu số'
             else:
