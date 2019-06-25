@@ -31,8 +31,6 @@ def home_page(request):
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        print form.is_valid()
-        print form
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -122,8 +120,8 @@ def api_create_place(request):
                 place.save()
                 return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
             except Place.DoesNotExist:
-                return HttpResponse(json.dumps({'result': True, 'message': 'Mã trạm không tồn tại trong hệ thống!'}), content_type='application/json')
-    return HttpResponse(json.dumps({'result': True, 'message': 'Bạn không có quyền thêm nhóm!'}), content_type='application/json')
+                return HttpResponse(json.dumps({'result': False, 'message': 'Mã trạm không tồn tại trong hệ thống!'}), content_type='application/json')
+    return HttpResponse(json.dumps({'result': False, 'message': 'Bạn không có quyền thêm nhóm!'}), content_type='application/json')
 
 
 @csrf_exempt
@@ -147,6 +145,38 @@ def api_create_device(request):
                     return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!'}), content_type='application/json')
                 except IntegrityError:
                     message_error = "Mã serial đã được sử dụng!"
+    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+
+
+@csrf_exempt
+def api_authentication(request):
+    message_error = ""
+    if not request.user.is_authenticated:
+        message_error = 'Bạn không có quyền điều khiển thiết bị!'
+    else:
+        if request.is_ajax():
+            password = request.POST.get('password')
+            user = authenticate(username=request.user.username, password=password)
+            if user:
+                place_id, load_name = request.POST.get('place_id').split('-')
+                place_code = request.POST.get('place_code')
+                try:
+                    place = request.user.related_place.get(place_code=place_id)
+                except Place.DoesNotExist:
+                    message_error = "Không tìm thấy trạm này!"
+                else:
+                    load = place.related_loads.filter(serial=load_name).first()
+                    is_checked_data = 'a' if not load.status else 'b'
+                    if load:
+                        load.status = not load.status
+                        load.save()
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
+                        return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
+                    return HttpResponse(json.dumps(
+                        {'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data),
+                         'status': False}), content_type='application/json')
+            else:
+                message_error = 'Mật khẩu không đúng!'
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 

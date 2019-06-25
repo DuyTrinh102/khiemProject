@@ -1,11 +1,11 @@
 (function ($) {
     $(document).ready(function () {
         var form = '<form action="" method="post">\n' +
-            '<label>Place code:</label>\n' +
+            '<label>Mã trạm:</label>\n' +
             '<input id="place_code" name="place_code" type="text">\n' +
-            '<label>Name:</label>\n' +
+            '<label>Tên:</label>\n' +
             '<input id="name" name="name" type="text">\n' +
-            '<label>Address:</label>\n' +
+            '<label>Địa chỉ:</label>\n' +
             '<input id="address" name="address" type="text">\n' +
             '</form>';
         var form2 = '<form action="" method="post" id="test">\n' +
@@ -21,6 +21,12 @@
             '<option value="NTU">NTU</option>\n' +
             '</select>\n' +
             '</form>';
+
+        var form_auth = '<form action="" method="post" name="form_auth">\n' +
+            '<label>Mật khẩu của bạn là:</label>\n' +
+            '<input id="password" name="password" type="password">\n' +
+            '</form>';
+
         try {
             var host = 'm16.cloudmqtt.com';
             var port = 39932;
@@ -168,6 +174,88 @@
                     }
                 ]
             });
+        });
+
+        $('#auth-form').html(form_auth).dialog({
+            modal: true,
+            autoOpen: false,
+            closeOnEscape: true,
+            dialogClass: "no-close",
+            resizable: false,
+            draggable: false,
+            width: 600,
+            buttons: [
+                {
+                    text: 'Save',
+                    click: function (event) {
+                        var password = $("#password").val();
+                        var place_id = $('.authentication').attr('id');
+                        var place_code = $('.authentication').attr('data-place-code');
+                        if (password === '') {
+                            alert("Please fill password to unlock...!!!!!!");
+                            event.preventDefault();
+                        }
+                        else {
+                            $.fn.csrfSafeMethod = function (method) {
+                                // these HTTP methods do not require CSRF protection
+                                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                            };
+
+                            $.ajaxSetup({
+                                beforeSend: function (xhr, settings) {
+                                    if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+                                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                    }
+                                }
+                            });
+                            $.ajax({
+                                'type': 'POST',
+                                'url': $('.authentication').attr('data-url'),
+                                'data': {
+                                    password: password,
+                                    place_id: place_id,
+                                    place_code: place_code,
+                                },
+                                'success': function (result) {
+                                    if (result.result) {
+                                        alert(result.message);
+                                        document.forms['form_auth'].reset();
+                                        if (result.status) {
+                                            location.reload();
+                                        }
+
+                                        console.log(result.isPub);
+                                        console.log('----');
+                                        if (result.isPub) {
+                                            var value = result.message;
+                                            client.send(topic, value);
+                                        }
+
+                                    }
+                                    else {
+                                        alert(result.message);
+                                    }
+                                },
+                            });
+                            $(this).dialog("close");
+                        }
+                    }
+                },
+                {
+                    text: "Close",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+        $('.authentication').on('click', function () {
+            $('#auth-form').dialog("open");
+        });
+
+        $('#auth-form').on('keypress', function (e) {
+            return e.which !== 13;
         });
 
         $('.control-load').on('click', function () {
@@ -359,7 +447,6 @@
 						var status = data_status[i].split(":");
 						if (status[1] === "a") {
 							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledon-icon.jpg');
-							console.log('AAAAAAAAAAa')
 						} else {
 							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledoff-icon.png');
 						}
