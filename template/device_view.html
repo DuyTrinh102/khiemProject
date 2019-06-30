@@ -10,6 +10,7 @@
     <script type="application/javascript" src="{% static 'js/create_place.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/loader.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/btn-group.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -179,6 +180,24 @@
         .btn-responsive {
             white-space: normal !important;
             word-wrap: break-word;
+            float: left;
+        }
+        .btn-responsive2 {
+            white-space: normal !important;
+            word-wrap: break-word;
+        }
+        .panel-responsive {
+            white-space: normal !important;
+            word-wrap: break-word;
+            background-color: #0c5460;
+            position: center;
+            width: 100%;
+        }
+        .panel-responsive2 {
+            white-space: normal !important;
+            word-wrap: break-word;
+            position: center;
+            width: 100%;
         }
     </style>
 {% endblock %}
@@ -187,8 +206,8 @@
     <div id="loader"></div>
     <div class="container-fluid bg-10 text-center" style="filter: blur(10px); display: none;" role="main" id="content-body">
         <div class="container">
-            <div id="dialog-form" title="Thêm trạm của bạn"></div>
-            <button type="button" id="btnCreate" class="btn btn-info create-place" data-url="{% url 'api_create_place' %} " >Thêm trạm</button>
+            <div id="dialog-form" title="Thêm khu vực của bạn"></div>
+            <button type="button" id="btnCreate" class="btn btn-info create-place" data-url="{% url 'api_create_place' %} " >Thêm khu vực</button>
         </div>
         <div id="users-contain" class="container bg-4 text-center">
             {% if places %}
@@ -199,7 +218,7 @@
                 <table id="users" class="table table-bordered" style="position: relative;">
                     <thead class="text-center">
                     <tr>
-                        <th class="text-warning text-center">Trạm</th>
+                        <th class="text-warning text-center">Khu vực</th>
                         <th class="text-warning text-center">Cảm biến</th>
                         <th class="text-warning text-center">Địa chỉ</th>
                     </tr>
@@ -208,12 +227,12 @@
                     {% for place in places %}
                         <tr>
                             <td width="40%">
-                                <div>{{ place.name }}</div>
+                                <div class="page-header">{{ place.name }}</div>
 {#                                    <label class="switch2" style="float: right;">#}
 {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>#}
 {#                                            <div class="slider2"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>#}
 {#                                    </label>#}
-                                <br><hr width="60%">
+                                <br><hr width="80%">
                                 <!-- Rectangular switch -->
 {#                                        <label class="switch" style="float: right;">#}
 {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-load_main" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"#}
@@ -225,21 +244,50 @@
 {#                                        </label>#}
                                     {% for load in place.loads %}
                                         {% ifequal load.typeLoad 0%}
-                                        <p>
-                                            <button type="button" class="btn btn-danger btn-responsive control-load" id="{{ place.place_code }}-{{ load.serial }}" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
-                                            <img id="{{ place.place_code }}-{{ load.serial }}-status" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px;filter: brightness(120%); float: right; display: inline-block;">
-                                        </p>
-                                        <br>
+                                            <div class="row" style="width: 100%; padding-left: 2rem;">
+                                                <button type="button" class="btn btn-danger btn-responsive control-load" id="{{ place.place_code }}-{{ load.serial }}-controlA" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
+                                                <img id="{{ place.place_code }}-{{ load.serial }}-statusA" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px;filter: brightness(120%); float: right; display: inline-block;">
+                                            </div>
+                                            <br>
                                         {% endifequal %}
                                     {% endfor %}
-                                    <hr width="60%">
+                                    <hr width="80%">
                                     {% for load in place.loads %}
                                         {% ifequal load.typeLoad 1%}
-                                        <p>
-                                            <button type="button" class="btn btn-warning btn-responsive authentication" id="{{ place.place_code }}-{{ load.serial }}" data-isAlert="0" data-url="{% url 'authentication' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
-                                            <img id="{{ place.place_code }}-{{ load.serial }}-status" data-status="0" src="{% static 'images/2x/baseline_lock_white_48dp.png' %}" alt=".." style="width: 50px; fill: white; float: right; display: inline-block;">
-                                        </p>
-                                        <br>
+                                            <div class="row" style="width: 100%; padding-left: 2rem;">
+                                                <button type="button" class="btn btn-warning btn-responsive authentication" id="{{ place.place_code }}-{{ load.serial }}-controlB" data-isAlert="0" data-url="{% url 'authentication' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
+                                                <img id="{{ place.place_code }}-{{ load.serial }}-statusB" data-status="0" src="{% static 'images/2x/baseline_lock_white_48dp.png' %}" alt=".." style="width: 50px; fill: white; float: right; display: block;">
+                                            </div>
+                                            <br>
+                                        {% endifequal %}
+                                    {% endfor %}
+                                    <hr width="80%">
+                                    {% for load in place.loads %}
+                                        {% ifequal load.typeLoad 2%}
+                                            <div class="row" style="width: 100%; padding-left: 1rem; padding-right: 1px;"  >
+                                                <div class="panel panel-responsive">
+    {#                                                <div class="panel panel-default panel-responsive" style="width: 18rem;">#}
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title">{{ load.name }}</h3>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="btn-group btn-group-sm btn-vertical">
+                                                                <button type="button" class="btn btn-danger btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="b">tắt</button>
+                                                                <button type="button" class="btn btn-info btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="a1">thấp</button>
+                                                                <button type="button" class="btn btn-info btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="a2">vừa</button>
+                                                                <button type="button" class="btn btn-info btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="a3">cao</button>
+                                                            </div>
+                                                        </div>
+                                                    {#                                                </div>#}
+                                                </div>
+{#                                                <img id="{{ place.place_code }}-{{ load.serial }}-status" data-status="0" src="{% static 'images/2x/baseline_lock_white_48dp.png' %}" alt=".." style="width:50px; float: right; display: inline-block;">#}
+                                                <div class="progress">
+                                                    <div class="progress-bar progress-bar-success progress-bar-striped active" id="{{ place.place_code }}-{{ load.serial }}-statusC" style="width: 0; color: #0b2e13; text-align: center;">
+                                                        Tắt
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
                                         {% endifequal %}
                                     {% endfor %}
                             </td>
@@ -248,20 +296,27 @@
                                 {% if place.sensors.all %}
                                     {% for sensor in place.sensors %}
                                         {% if sensor.type_display %}
-                                            <li style="float: left;"><i>{{ sensor.name }} ({{ sensor.unit }})</i>
+                                            <div class="row" style="padding-right: 1rem">
+                                            <i>{{ sensor.name }} ({{ sensor.unit }})</i>
 {#                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">#}
 {#                                            <i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>#}
+                                            <input class="input-vertical" type="text" id="{{ sensor.serial }}" style="float: right; width: 50%; color: #1b1e21; display: inline-block" disabled />
 
-                                            </li>
-                                            <input type="text" id="{{ sensor.serial }}" style="float: right; width: 120px; color: #1b1e21; display: inline-block" disabled />
-                                            <br>
+                                            </div>
+
                                         {% else %}
-                                            <li style="float: left;"><i>{{ sensor.name }} </i>
-                                            </li>
-                                            <img id="{{ sensor.serial }}" src="{% static 'images/yesBg.png' %}" alt=".." style="width: 120px;filter: brightness(120%); position: center; display: inline-block;">
+                                            <div class="row" style="padding-left: 1rem; padding-right: 1rem;" >
+                                                <i>{{ sensor.name }} </i>
+{#                                            <img id="{{ sensor.serial }}" src="{% static 'images/yesBg.png' %}" alt=".." style="width: 80%;filter: brightness(120%); position: center; display: inline-block;">#}
+                                                <div class="panel panel-success panel-responsive" style="background-color: #49a844;">
+                                                    <div class="panel-body" id="{{ sensor.serial }}">
+                                                        <strong>Well!</strong> Khu vực của bạn an toàn.
+                                                    </div>
+                                                </div>
+                                            </div>
                                         {% endif %}
                                         <br>
-                                        <hr width="50%" style="position: center; padding-top: 5px;">
+                                        <hr width="80%" style="position: center; padding-top: 5px;">
 
                                     {% endfor %}
                                 {% else %}

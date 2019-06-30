@@ -147,6 +147,38 @@ def api_create_device(request):
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 
+@api_view(['POST'])
+@permission_classes((permissions.BasePermission,))
+def api_auth_validate(request):
+    place_id = request.POST.get('place_id')
+    try:
+        place = Place.objects.get(place_code=place_id)
+        if not place.owner:
+            raise Exception('Modem này chưa được thêm vào hệ thống!')
+    except Place.DoesNotExist:
+        message_error = "Không tìm thấy khu vực này!"
+    except Exception as e:
+        message_error = e
+    else:
+        return HttpResponse(json.dumps(
+            {'result': True, 'message': place.owner.username}), content_type='application/json')
+    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+
+
+@api_view(['POST'])
+@permission_classes((permissions.BasePermission,))
+def api_auth_validate(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = authenticate(username=username, password=password)
+    if user:
+        return HttpResponse(json.dumps(
+                {'result': True, 'isPub': True, 'message': 'Xác thực thành công'}), content_type='application/json')
+    else:
+        message_error = 'Mật khẩu không đúng!'
+    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+
+
 @csrf_exempt
 def api_authentication(request):
     message_error = ""
@@ -157,7 +189,7 @@ def api_authentication(request):
             password = request.POST.get('password')
             user = authenticate(username=request.user.username, password=password)
             if user:
-                place_id, load_name = request.POST.get('place_id').split('-')
+                place_id, load_name, control_type = request.POST.get('place_id').split('-')
                 place_code = request.POST.get('place_code')
                 try:
                     place = request.user.related_place.get(place_code=place_id)
@@ -169,10 +201,10 @@ def api_authentication(request):
                     if load:
                         load.status = not load.status
                         load.save()
-                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-controlB'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
                     return HttpResponse(json.dumps(
-                        {'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data),
+                        {'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-controlB'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data),
                          'status': False}), content_type='application/json')
             else:
                 message_error = 'Mật khẩu không đúng!'
@@ -186,14 +218,15 @@ def api_control_place(request):
         message_error = 'Bạn không có quyền thêm thiết bị!'
     else:
         if request.is_ajax():
-            place_id, load_name = request.POST.get('place_id').split('-')
+            print request.POST.get('place_id').split('-')
+            place_id, load_name, control_type = request.POST.get('place_id').split('-')
             place_code = request.POST.get('place_code')
             is_checked = request.POST.get('is_checked')
             is_checked_data = 'a' if is_checked == 'true' else 'b'
             is_checked_bool = True if is_checked == 'true' else False
 
             try:
-                place = request.user.related_place.get(place_code=place_id)
+                place = request.user.related_place.get(place_code=place_code)
             except Place.DoesNotExist:
                 message_error = "Không tìm thấy nhóm này!"
                 return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
@@ -212,13 +245,16 @@ def api_control_place(request):
                         return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': False}), content_type='application/json')
                 else:
                     load = place.related_loads.filter(serial=load_name).first()
-                    is_checked_data = 'a' if not load.status else 'b'
-                    if load:
-                        load.status = not load.status
-                        load.save()
-                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
+                    if load.typeLoad != 2:
+                        is_checked_data = 'a' if not load.status else 'b'
+                        if load:
+                            load.status = not load.status
+                            load.save()
+                    else:
+                        is_checked_data = is_checked
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data, control_type=control_type)):
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
-                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-control'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data), 'status': False}), content_type='application/json')
+                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data, control_type=control_type), 'status': False}), content_type='application/json')
                 message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 

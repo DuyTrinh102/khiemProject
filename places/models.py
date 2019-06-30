@@ -18,7 +18,8 @@ TYPE_DISPLAY = (
 
 TYPE_LOAD = (
 	(0, 'Normal'),
-	(1, 'Secure')
+	(1, 'Secure'),
+	(2, 'Levels'),
 )
 
 

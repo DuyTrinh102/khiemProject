@@ -28,8 +28,8 @@
             '</form>';
 
         try {
-            var host = 'm16.cloudmqtt.com';
-            var port = 39932;
+            var host = 'postman.cloudmqtt.com';
+            var port = 33475;
             var topic = 'publishTopic';
             $('#content-body').attr('style', 'filter: blur(10px');
             $('#loader').attr('style', 'display: block');
@@ -52,7 +52,7 @@
             width: 600,
             buttons: [
                 {
-                    text: 'Save',
+                    text: 'Lưu',
                     click: function (event) {
                         var place_code = $("#place_code").val();
                         var address = $("#address").val();
@@ -98,7 +98,7 @@
                     }
                 },
                 {
-                    text: "Close",
+                    text: "Đóng",
                     click: function () {
                         $(this).dialog("close");
                     }
@@ -120,7 +120,7 @@
                 width: 600,
                 buttons: [
                     {
-                        text: 'Save',
+                        text: 'Lưu',
                         click: function (event) {
                             var unit = $("#unit").val();
                             var name = $("#name2").val();
@@ -167,7 +167,7 @@
                         }
                     },
                     {
-                        text: "Close",
+                        text: "Đóng",
                         click: function () {
                             $(this).dialog("close");
                         }
@@ -186,7 +186,7 @@
             width: 600,
             buttons: [
                 {
-                    text: 'Save',
+                    text: 'Gửi',
                     click: function (event) {
                         var password = $("#password").val();
                         var place_id = $('.authentication').attr('id');
@@ -219,7 +219,7 @@
                                 },
                                 'success': function (result) {
                                     if (result.result) {
-                                        alert(result.message);
+                                        alert('Đã gửi thành công!');
                                         document.forms['form_auth'].reset();
                                         if (result.status) {
                                             location.reload();
@@ -243,7 +243,7 @@
                     }
                 },
                 {
-                    text: "Close",
+                    text: "Đóng",
                     click: function () {
                         $(this).dialog("close");
                     }
@@ -261,6 +261,7 @@
         $('.control-load').on('click', function () {
                 var place_id = $(this).attr('id');
                 var place_code = $(this).attr('data-place-code');
+                var data_control = $(this).attr('data-control');
                 $.fn.csrfSafeMethod = function (method) {
                     // these HTTP methods do not require CSRF protection
                     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -280,7 +281,7 @@
                     'data': {
                         place_id: place_id,
                         place_code: place_code,
-                        is_checked: $(this).is(":checked")
+                        is_checked: data_control
                     },
                     'success': function (result) {
                         if (result.result){
@@ -388,8 +389,8 @@
 			var options = {
 				useSSL: true,
 				timeout: 60,
-				userName: 'vwlfeugw',
-				password: 'DUpHC0CbRzrX',
+				userName: 'nzwgvnhu',
+				password: 'Vz8xYtwgE6E4',
 				cleanSession: true,
 				onSuccess: function () {
 					// client.send(topic, value);
@@ -422,6 +423,7 @@
 	// called when a message arrives
 	function onMessageArrived(message) {
         var data = message.payloadString;
+        console.log(data);
 		try {
 			data = JSON.parse(message.payloadString);
 			var type = data['type'];
@@ -431,24 +433,66 @@
 				$('#' + data['serial']).val(value);
 			} else {
 				if (value === 0) {
-					$('#' + data['serial']).attr('src', '/static/images/warningBg.png');
+					$('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
+					$('#' + data['serial']).html('<strong>Warning!!!</strong> Có báo động!!!');
 				} else {
 					$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
 				}
 			}
 		} catch (e) {
 			var data_list = data.split("-");
+			console.log(data_list);
 			if (data_list.length === 3) {
-				if (data_list[2] === "status") {
+				if (data_list[2] === "statusA") {
 					var data_status = data_list[1].split(";");
-					console.log(data_status);
+					// console.log(data_status);
 					var i;
 					for (i = 0; i < data_status.length; i++) {
 						var status = data_status[i].split(":");
+						// console.log(data_list[0] + "-" + status[0] + '-statusA');
 						if (status[1] === "a") {
-							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledon-icon.jpg');
+							$('#' + data_list[0] + "-" + status[0] + '-statusA').attr('src', '/static/images/ledon-icon.jpg');
 						} else {
-							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledoff-icon.png');
+							$('#' + data_list[0] + "-" + status[0] + '-statusA').attr('src', '/static/images/ledoff-icon.png');
+						}
+					}
+				}
+				else if (data_list[2] === "statusB") {
+					var data_statusB = data_list[1].split(";");
+					// console.log(data_status);
+					var iB;
+					for (iB = 0; iB < data_statusB.length; iB++) {
+						var statusB = data_statusB[iB].split(":");
+						// console.log(data_list[0] + "-" + status[0] + '-statusA');
+						if (statusB[1] === "a") {
+							$('#' + data_list[0] + "-" + statusB[0] + '-statusB').attr('src', '/static/images/2x/baseline_lock_open_white_48dp.png');
+						} else {
+							$('#' + data_list[0] + "-" + statusB[0] + '-statusB').attr('src', '/static/images/2x/baseline_lock_white_48dp.png');
+						}
+					}
+				}
+				else if (data_list[2] === "statusC") {
+					var data_statusC = data_list[1].split(";");
+					// console.log(data_status);
+					var iC;
+					for (iC = 0; iC < data_statusC.length; iC++) {
+						var statusC = data_statusC[iC].split(":");
+						// console.log(data_list[0] + "-" + status[0] + '-statusA');
+						if (statusC[1] === "a1") {
+							$('#' + data_list[0] + "-" + statusC[0] + '-statusC').attr('style', 'width: 25%');
+							$('#' + data_list[0] + "-" + statusC[0] + '-statusC').text('25%');
+						}
+						else if (statusC[1] === "a2") {
+						    $('#' + data_list[0] + "-" + statusC[0] + '-statusC').attr('style', 'width: 50%');
+                            $('#' + data_list[0] + "-" + statusC[0] + '-statusC').text('50%');
+                        }
+						else if (statusC[1] === "a3") {
+						    $('#' + data_list[0] + "-" + statusC[0] + '-statusC').attr('style', 'width: 100%');
+                            $('#' + data_list[0] + "-" + statusC[0] + '-statusC').text('100%');
+                        }
+						else {
+                            $('#' + data_list[0] + "-" + statusC[0] + '-statusC').attr('style', 'width: 0; color: black;');
+                            $('#' + data_list[0] + "-" + statusC[0] + '-statusC').text('Tắt');
 						}
 					}
 				}
