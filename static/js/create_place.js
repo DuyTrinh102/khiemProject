@@ -176,7 +176,7 @@
             });
         });
 
-        $('#auth-form').html(form_auth).dialog({
+        $('#auth-form').dialog({
             modal: true,
             autoOpen: false,
             closeOnEscape: true,
@@ -189,10 +189,11 @@
                     text: 'Gửi',
                     click: function (event) {
                         var password = $("#password").val();
+                        console.log(password);
                         var place_id = $('.authentication').attr('id');
                         var place_code = $('.authentication').attr('data-place-code');
                         if (password === '') {
-                            alert("Please fill password to unlock...!!!!!!");
+                            alert("Điền mật khẩu để tiếp tục...!!!!!!");
                             event.preventDefault();
                         }
                         else {

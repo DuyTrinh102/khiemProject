@@ -147,33 +147,33 @@ def api_create_device(request):
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 
-@api_view(['POST'])
-@permission_classes((permissions.BasePermission,))
-def api_auth_validate(request):
-    place_id = request.POST.get('place_id')
-    try:
-        place = Place.objects.get(place_code=place_id)
-        if not place.owner:
-            raise Exception('Modem này chưa được thêm vào hệ thống!')
-    except Place.DoesNotExist:
-        message_error = "Không tìm thấy khu vực này!"
-    except Exception as e:
-        message_error = e
-    else:
-        return HttpResponse(json.dumps(
-            {'result': True, 'message': place.owner.username}), content_type='application/json')
-    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+# @api_view(['POST'])
+# @permission_classes((permissions.BasePermission,))
+# def api_auth_validate(request):
+#     place_id = request.POST.get('place_id')
+#     try:
+#         place = Place.objects.get(place_code=place_id)
+#         if not place.owner:
+#             raise Exception('Modem này chưa được thêm vào hệ thống!')
+#     except Place.DoesNotExist:
+#         message_error = "Không tìm thấy khu vực này!"
+#     except Exception as e:
+#         message_error = e
+#     else:
+#         return HttpResponse(json.dumps(
+#             {'result': True, 'message': place.owner.username}), content_type='application/json')
+#     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 
 @api_view(['POST'])
 @permission_classes((permissions.BasePermission,))
 def api_auth_validate(request):
-    username = request.POST.get('username')
+    username = request.POST.get('serial')
     password = request.POST.get('password')
-    user = authenticate(username=username, password=password)
+    user = Load.objects.filter(serial=username, password=password, typeLoad=1).first()
     if user:
         return HttpResponse(json.dumps(
-                {'result': True, 'isPub': True, 'message': 'Xác thực thành công'}), content_type='application/json')
+                {'result': True, 'message': 'Xác thực thành công'}), content_type='application/json')
     else:
         message_error = 'Mật khẩu không đúng!'
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
@@ -187,16 +187,17 @@ def api_authentication(request):
     else:
         if request.is_ajax():
             password = request.POST.get('password')
-            user = authenticate(username=request.user.username, password=password)
-            if user:
-                place_id, load_name, control_type = request.POST.get('place_id').split('-')
-                place_code = request.POST.get('place_code')
-                try:
-                    place = request.user.related_place.get(place_code=place_id)
-                except Place.DoesNotExist:
-                    message_error = "Không tìm thấy trạm này!"
+            place_id, load_name, control_type = request.POST.get('place_id').split('-')
+            place_code = request.POST.get('place_code')
+            try:
+                place = request.user.related_place.get(place_code=place_id)
+            except Place.DoesNotExist:
+                message_error = "Không tìm thấy khu vực này!"
+            else:
+                load = place.related_loads.filter(serial=load_name, password=password).first()
+                if not load:
+                    message_error = "Mật khẩu không đúng! Vui lòng thử lại!"
                 else:
-                    load = place.related_loads.filter(serial=load_name).first()
                     is_checked_data = 'a' if not load.status else 'b'
                     if load:
                         load.status = not load.status
@@ -206,8 +207,6 @@ def api_authentication(request):
                     return HttpResponse(json.dumps(
                         {'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-controlB'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data),
                          'status': False}), content_type='application/json')
-            else:
-                message_error = 'Mật khẩu không đúng!'
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 

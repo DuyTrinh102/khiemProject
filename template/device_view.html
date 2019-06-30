@@ -211,7 +211,15 @@
         </div>
         <div id="users-contain" class="container bg-4 text-center">
             {% if places %}
-                <div id="auth-form" title="Xác thực mật khẩu"></div>
+                <div id="auth-form" title="Xác thực mật khẩu">
+                    <form action="" method="post" name="form_auth">
+                        <div class="divOuter">
+                            <div class="divInner">
+                                <input class="partitioned" type="password" id="password" maxlength="4">
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div id="dialog-form2" title="Create new device"></div>
                 <div id="dialog-form3" title="Control place"></div>
                 <div id="dialog-form4" title="Delete device"></div>
