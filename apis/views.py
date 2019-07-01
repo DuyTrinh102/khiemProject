@@ -211,6 +211,27 @@ def api_authentication(request):
 
 
 @csrf_exempt
+def api_change_authentication(request):
+    message_error = ""
+    if not request.user.is_authenticated:
+        message_error = 'Bạn không có quyền điều khiển thiết bị!'
+    else:
+        if request.is_ajax():
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            load_name, key = request.POST.get('load_info').split('-')
+            load = Load.objects.filter(serial=load_name, password=old_password).first()
+            if not load:
+                message_error = "Mật khẩu cũ không đúng! Vui lòng thử lại!"
+            else:
+                load.password = new_password
+                load.save()
+                return HttpResponse(json.dumps(
+                    {'result': True, 'message': 'Cập nhật mật khẩu mới thành công!'}), content_type='application/json')
+    return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
+
+
+@csrf_exempt
 def api_control_place(request):
     message_error = ""
     if not request.user.is_authenticated:

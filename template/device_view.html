@@ -215,7 +215,22 @@
                     <form action="" method="post" name="form_auth">
                         <div class="divOuter">
                             <div class="divInner">
+                                <label>Mật khẩu của bạn là:</label>
                                 <input class="partitioned" type="password" id="password" maxlength="4">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="change-auth-form" title="Đổi mật khẩu">
+                    <form action="" name="form_change_auth">
+                        <div class="divOuter">
+                            <div class="divInner">
+                                <label>Mật khẩu cũ:</label>
+                                <input class="partitioned" type="password" id="ol-password" maxlength="4">
+                                <label>Mật khẩu mới:</label>
+                                <input class="partitioned" type="password" id="ne-password" maxlength="4">
+                                <label>Nhập lại mật khẩu:</label>
+                                <input class="partitioned" type="password" id="re-password" maxlength="4">
                             </div>
                         </div>
                     </form>
@@ -264,6 +279,9 @@
                                         {% ifequal load.typeLoad 1%}
                                             <div class="row" style="width: 100%; padding-left: 2rem;">
                                                 <button type="button" class="btn btn-warning btn-responsive authentication" id="{{ place.place_code }}-{{ load.serial }}-controlB" data-isAlert="0" data-url="{% url 'authentication' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
+                                                <button type="button" class="btn btn-responsive change-authentication" id="{{ load.serial }}-change" data-url="{% url 'api_change_authentication' %}" style="background-color: transparent;">
+                                                    <img id="{{ place.place_code }}-{{ load.serial }}-statusB" src="{% static 'images/2x/baseline_settings_white_18dp.png' %}" alt=".." style="width: 20px; display: block;">
+                                                </button>
                                                 <img id="{{ place.place_code }}-{{ load.serial }}-statusB" data-status="0" src="{% static 'images/2x/baseline_lock_white_48dp.png' %}" alt=".." style="width: 50px; fill: white; float: right; display: block;">
                                             </div>
                                             <br>

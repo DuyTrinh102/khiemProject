@@ -22,11 +22,6 @@
             '</select>\n' +
             '</form>';
 
-        var form_auth = '<form action="" method="post" name="form_auth">\n' +
-            '<label>Mật khẩu của bạn là:</label>\n' +
-            '<input id="password" name="password" type="password">\n' +
-            '</form>';
-
         try {
             var host = 'postman.cloudmqtt.com';
             var port = 33475;
@@ -189,7 +184,6 @@
                     text: 'Gửi',
                     click: function (event) {
                         var password = $("#password").val();
-                        console.log(password);
                         var place_id = $('.authentication').attr('id');
                         var place_code = $('.authentication').attr('data-place-code');
                         if (password === '') {
@@ -253,6 +247,78 @@
         });
         $('.authentication').on('click', function () {
             $('#auth-form').dialog("open");
+        });
+
+        $('#change-auth-form').dialog({
+            modal: true,
+            autoOpen: false,
+            closeOnEscape: true,
+            dialogClass: "no-close",
+            resizable: false,
+            draggable: false,
+            width: 600,
+            buttons: [
+                {
+                    text: 'Lưu',
+                    click: function (event) {
+                        var ol_password = $("#ol-password").val();
+                        var ne_password = $("#ne-password").val();
+                        var re_password = $("#re-password").val();
+                        var place_id = $('.change-authentication').attr('id');
+                        if (ol_password === '' || ne_password === '' || re_password === ''){
+                            alert("Điền đầy đủ mật khẩu để tiếp tục...!!!!!!");
+                            event.preventDefault();
+                        }
+                        else if (ne_password !== re_password){
+                            alert("Nhập lại mật khẩu phải khớp với mật khẩu mới...!!!!!!");
+                            event.preventDefault();
+                        }
+                        else {
+                            $.fn.csrfSafeMethod = function (method) {
+                                // these HTTP methods do not require CSRF protection
+                                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                            };
+
+                            $.ajaxSetup({
+                                beforeSend: function (xhr, settings) {
+                                    if (!$.fn.csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                        var csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+                                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                                    }
+                                }
+                            });
+                            $.ajax({
+                                'type': 'POST',
+                                'url': $('.change-authentication').attr('data-url'),
+                                'data': {
+                                    old_password: ol_password,
+                                    new_password: ne_password,
+                                    load_info: place_id,
+                                },
+                                'success': function (result) {
+                                    if (result.result) {
+                                        alert('Đổi mật khẩu thành công!');
+                                        document.forms['form_change_auth'].reset();
+                                    }
+                                    else {
+                                        alert(result.message);
+                                    }
+                                },
+                            });
+                            $(this).dialog("close");
+                        }
+                    }
+                },
+                {
+                    text: "Đóng",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+        $('.change-authentication').on('click', function () {
+            $('#change-auth-form').dialog("open");
         });
 
         $('#auth-form').on('keypress', function (e) {

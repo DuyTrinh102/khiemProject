@@ -25,8 +25,8 @@ TYPE_LOAD = (
 
 
 def validate_password(value):
-    if not value.isdigit() or len(value) > 4:
-        raise ValidationError('Format password is digits. Max length is 4 chars.')
+    if not value.isdigit() or len(value) != 4:
+        raise ValidationError('Format password is digits. Length password must be 4 chars.')
 
 
 class UnitPrice(models.Model):
