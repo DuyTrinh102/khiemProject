@@ -52,7 +52,7 @@ class Load(models.Model):
     serial = models.CharField(max_length=30, unique=True)
     status = models.BooleanField(default=False)
     typeLoad = models.PositiveIntegerField(default=0, choices=TYPE_LOAD)
-    password = models.CharField(blank=True, null=True, max_length=4, validators=[validate_password])
+    password = models.CharField(blank=True, null=True, max_length=4, validators=[validate_password], default='1234')
 
 
 class Sensor(models.Model):
