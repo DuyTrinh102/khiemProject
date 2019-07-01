@@ -265,7 +265,7 @@
                         var ne_password = $("#ne-password").val();
                         var re_password = $("#re-password").val();
                         var place_id = $('.change-authentication').attr('id');
-                        if (ol_password === '' || ne_password === '' || re_password === ''){
+                        if (ol_password.length !== 4 || ne_password.length !== 4 || re_password.length !== 4){
                             alert("Điền đầy đủ mật khẩu để tiếp tục...!!!!!!");
                             event.preventDefault();
                         }
