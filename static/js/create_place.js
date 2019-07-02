@@ -348,7 +348,8 @@
                     'data': {
                         place_id: place_id,
                         place_code: place_code,
-                        is_checked: data_control
+                        is_checked: data_control,
+                        is_checked_sensor: $(this).is(":checked")
                     },
                     'success': function (result) {
                         if (result.result){

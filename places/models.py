@@ -14,7 +14,8 @@ STATUS_CONTROL = (
 
 TYPE_DISPLAY = (
     (0, 'Warning'),
-    (1, 'Display')
+    (1, 'Display'),
+    (2, 'Warning2'),
 )
 
 TYPE_LOAD = (

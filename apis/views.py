@@ -238,12 +238,12 @@ def api_control_place(request):
         message_error = 'Bạn không có quyền thêm thiết bị!'
     else:
         if request.is_ajax():
-            print request.POST.get('place_id').split('-')
             place_id, load_name, control_type = request.POST.get('place_id').split('-')
             place_code = request.POST.get('place_code')
+            is_checked_sensor = request.POST.get('is_checked_sensor')
             is_checked = request.POST.get('is_checked')
             is_checked_data = 'a' if is_checked == 'true' else 'b'
-            is_checked_bool = True if is_checked == 'true' else False
+            is_checked_bool = True if is_checked_sensor == 'true' else False
 
             try:
                 place = request.user.related_place.get(place_code=place_code)
@@ -251,12 +251,14 @@ def api_control_place(request):
                 message_error = "Không tìm thấy nhóm này!"
                 return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
             else:
-                if load_name == 'load_main':
+                if control_type == 'sensor':
                     place.load_main = is_checked_bool
                     place.save()
-                    if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data)):
-                        return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': False}), content_type='application/json')
-                elif load_name == 'status':
+                    is_checked_data = 'a' if is_checked_bool else 'b'
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data, control_type=control_type)):
+                        return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
+                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data, control_type=control_type), 'status': False}), content_type='application/json')
+                elif control_type == 'status':
                     place.status = is_checked_bool
                     place.save()
                     if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data)):
