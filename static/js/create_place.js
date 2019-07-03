@@ -547,15 +547,15 @@
 					for (iC = 0; iC < data_statusC.length; iC++) {
 						var statusC = data_statusC[iC].split(":");
 						// console.log(data_list[0] + "-" + status[0] + '-statusA');
-						if (statusC[1] === "a1") {
+						if (statusC[1] === "1") {
 							$('#' + data_list[0] + "-" + statusC[0] + '-statusC').attr('style', 'width: 25%');
 							$('#' + data_list[0] + "-" + statusC[0] + '-statusC').text('25%');
 						}
-						else if (statusC[1] === "a2") {
+						else if (statusC[1] === "2") {
 						    $('#' + data_list[0] + "-" + statusC[0] + '-statusC').attr('style', 'width: 50%');
                             $('#' + data_list[0] + "-" + statusC[0] + '-statusC').text('50%');
                         }
-						else if (statusC[1] === "a3") {
+						else if (statusC[1] === "3") {
 						    $('#' + data_list[0] + "-" + statusC[0] + '-statusC').attr('style', 'width: 100%');
                             $('#' + data_list[0] + "-" + statusC[0] + '-statusC').text('100%');
                         }
