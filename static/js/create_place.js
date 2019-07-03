@@ -504,7 +504,8 @@
 					$('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
 					$('#' + data['serial']).html('<strong>Warning!!!</strong> Có báo động!!!');
 				} else {
-					$('#' + data['serial']).attr('src', '/static/images/yesBg.png');
+					$('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
+					$('#' + data['serial']).html('<strong>Well!</strong> Khu vực của bạn an toàn');
 				}
 			}
 		} catch (e) {
