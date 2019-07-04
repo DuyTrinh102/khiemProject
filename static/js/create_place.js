@@ -334,6 +334,7 @@
                 var place_code = $(this).attr('data-place-code');
                 var data_control = $(this).attr('data-control');
                 var data_status = $('#' + place_code + '-statusA').attr('data-status');
+                var is_checked_sensor = $(this).is(":checked");
                 $.fn.csrfSafeMethod = function (method) {
                     // these HTTP methods do not require CSRF protection
                     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -354,7 +355,7 @@
                         place_id: place_id,
                         place_code: place_code,
                         is_checked: data_control,
-                        is_checked_sensor: $(this).is(":checked"),
+                        is_checked_sensor: is_checked_sensor,
                         data_status: data_status,
                     },
                     'success': function (result) {
@@ -369,6 +370,15 @@
                             if (result.isPub){
                                 var value = result.message;
                                 client.send(topic, value);
+                            }
+
+                            if (is_checked_sensor === true){
+                                $('#' + place_code.split("-")[1]).attr('style', 'background-color: #49a844; color: white;');
+                                $('#' + place_code.split("-")[1]).html('<strong>Well!</strong> Khu vực của bạn an toàn');
+                            }
+                            else {
+                                $('#' + place_code.split("-")[1]).attr('style', 'background-color: #D84603; color: #600229;');
+                                $('#' + place_code.split("-")[1]).html('<strong>WARNING!!!</strong> Bạn đã tắt báo động!!!');
                             }
 
                         }
@@ -502,17 +512,22 @@
 			data = JSON.parse(message.payloadString);
 			var type = data['type'];
 			var value = data['value'];
+			var place_id = data['place_id'];
 
 			if (type === 1){
 				$('#' + data['serial']).val(value);
 			} else {
-				if (value === 0) {
-					$('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
-					$('#' + data['serial']).html('<strong>Warning!!!</strong> Có báo động!!!');
-				} else {
-					$('#' + data['serial']).attr('style', 'background-color: #49a844; color: #FD7415;');
-					$('#' + data['serial']).html('<strong>Well!</strong> Khu vực của bạn an toàn');
-				}
+			    console.log($('#' + place_id + '-' + data['serial'] + '-' +'sensor').is(":checked"));
+			    if ($('#' + place_id + '-' + data['serial'] + '-' + 'sensor').is(":checked")){
+			        console.log('aaa');
+                    if (value === 0) {
+                        $('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
+                        $('#' + data['serial']).html('<strong>Warning!!!</strong> Có báo động!!!');
+                    } else {
+                        $('#' + data['serial']).attr('style', 'background-color: #49a844; color: white;');
+                        $('#' + data['serial']).html('<strong>Well!</strong> Khu vực của bạn an toàn');
+                    }
+                }
 			}
 		} catch (e) {
 			var data_list = data.split("-");

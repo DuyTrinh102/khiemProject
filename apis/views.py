@@ -245,6 +245,7 @@ def api_control_place(request):
             is_checked_bool = True if is_checked_sensor == 'true' else False
 
             try:
+                print request.POST.get('place_id')
                 place = request.user.related_place.get(place_code=place_id)
             except Place.DoesNotExist:
                 message_error = "Không tìm thấy nhóm này!"

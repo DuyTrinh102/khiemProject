@@ -334,18 +334,26 @@
                                                 <div class=".col-sm">
                                                     <i>{{ sensor.name }} </i>
                                                     <label class="switch" style="float: right;">
-                                                        <input type="checkbox" class="control-load" id="{{ place.id }}-{{ sensor.serial }}-sensor" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
+                                                        <input type="checkbox" class="control-load" id="{{ place.place_code }}-{{ sensor.serial }}-sensor" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}-{{ sensor.serial }}"
                                                                 {% if place.load_main %} checked="checked" {% endif %}
                                                         >
                                                         <div class="slider round"><span class="on">ON</span><span class="off">OFF</span></div>
                                                     </label>
                                                 </div>
                                                 <div class=".col-sm">
-                                                    <div class="panel panel-success panel-responsive" style="background-color: #49a844;">
-                                                        <div class="panel-body" id="{{ sensor.serial }}">
-                                                            <strong>Well!</strong> Khu vực của bạn an toàn.
+                                                    {% if place.load_main %}
+                                                        <div class="panel panel-success panel-responsive" style="background-color: #49a844;">
+                                                            <div class="panel-body" id="{{ sensor.serial }}">
+                                                                <strong>Well!</strong> Khu vực của bạn an toàn.
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    {% else %}
+                                                        <div class="panel panel-success panel-responsive" style="background-color: #D84603; color: #600229;">
+                                                            <div class="panel-body" id="{{ sensor.serial }}">
+                                                                <strong>WARNING!!!</strong> Bạn đã tắt báo động!!!
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         {% else %}
