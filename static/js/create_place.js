@@ -186,6 +186,8 @@
                         var password = $("#password").val();
                         var place_id = $('.authentication').attr('id');
                         var place_code = $('.authentication').attr('data-place-code');
+                        var is_checked = $('#' + place_code + '-statusB').attr('data-status');
+                        console.log($('#' + place_code + '-statusB').attr('data-status'));
                         if (password === '') {
                             alert("Điền mật khẩu để tiếp tục...!!!!!!");
                             event.preventDefault();
@@ -211,6 +213,7 @@
                                     password: password,
                                     place_id: place_id,
                                     place_code: place_code,
+                                    is_checked: is_checked
                                 },
                                 'success': function (result) {
                                     if (result.result) {
@@ -220,7 +223,7 @@
                                             location.reload();
                                         }
 
-                                        console.log(result.isPub);
+                                        console.log(result.message);
                                         console.log('----');
                                         if (result.isPub) {
                                             var value = result.message;
@@ -296,6 +299,7 @@
                                     load_info: place_id,
                                 },
                                 'success': function (result) {
+                                    console.log(result.result);
                                     if (result.result) {
                                         alert('Đổi mật khẩu thành công!');
                                         document.forms['form_change_auth'].reset();
@@ -329,6 +333,7 @@
                 var place_id = $(this).attr('id');
                 var place_code = $(this).attr('data-place-code');
                 var data_control = $(this).attr('data-control');
+                var data_status = $('#' + place_code + '-statusA').attr('data-status');
                 $.fn.csrfSafeMethod = function (method) {
                     // these HTTP methods do not require CSRF protection
                     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -349,7 +354,8 @@
                         place_id: place_id,
                         place_code: place_code,
                         is_checked: data_control,
-                        is_checked_sensor: $(this).is(":checked")
+                        is_checked_sensor: $(this).is(":checked"),
+                        data_status: data_status,
                     },
                     'success': function (result) {
                         if (result.result){
@@ -358,7 +364,7 @@
                                 location.reload();
                             }
 
-                            console.log(result.isPub);
+                            console.log(result.message);
                             console.log('----');
                             if (result.isPub){
                                 var value = result.message;
@@ -521,8 +527,10 @@
 						// console.log(data_list[0] + "-" + status[0] + '-statusA');
 						if (status[1] === "a") {
 							$('#' + data_list[0] + "-" + status[0] + '-statusA').attr('src', '/static/images/ledon-icon.jpg');
+							$('#' + data_list[0] + "-" + status[0] + '-statusA').attr('data-status', '1');
 						} else {
 							$('#' + data_list[0] + "-" + status[0] + '-statusA').attr('src', '/static/images/ledoff-icon.png');
+							$('#' + data_list[0] + "-" + status[0] + '-statusA').attr('data-status', '0');
 						}
 					}
 				}
@@ -535,8 +543,10 @@
 						// console.log(data_list[0] + "-" + status[0] + '-statusA');
 						if (statusB[1] === "a") {
 							$('#' + data_list[0] + "-" + statusB[0] + '-statusB').attr('src', '/static/images/2x/baseline_lock_open_white_48dp.png');
+							$('#' + data_list[0] + "-" + statusB[0] + '-statusB').attr('data-status', '1');
 						} else {
 							$('#' + data_list[0] + "-" + statusB[0] + '-statusB').attr('src', '/static/images/2x/baseline_lock_white_48dp.png');
+							$('#' + data_list[0] + "-" + statusB[0] + '-statusB').attr('data-status', '0');
 						}
 					}
 				}

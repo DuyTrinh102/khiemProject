@@ -189,6 +189,8 @@ def api_authentication(request):
             password = request.POST.get('password')
             place_id, load_name, control_type = request.POST.get('place_id').split('-')
             place_code = request.POST.get('place_code')
+            is_checked = request.POST.get('is_checked')
+            print type(is_checked)
             try:
                 place = request.user.related_place.get(place_code=place_id)
             except Place.DoesNotExist:
@@ -198,14 +200,11 @@ def api_authentication(request):
                 if not load:
                     message_error = "Mật khẩu không đúng! Vui lòng thử lại!"
                 else:
-                    is_checked_data = 'a' if not load.status else 'b'
-                    if load:
-                        load.status = not load.status
-                        load.save()
-                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-controlB'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data)):
+                    is_checked_data = 'a' if not is_checked != '0' else 'b'
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-controlB'.format(place_code=place_id, load_id=load.serial, is_checked=is_checked_data)):
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
                     return HttpResponse(json.dumps(
-                        {'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-controlB'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data),
+                        {'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-controlB'.format(place_code=place_id, load_id=load.serial, is_checked=is_checked_data),
                          'status': False}), content_type='application/json')
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
@@ -241,12 +240,12 @@ def api_control_place(request):
             place_id, load_name, control_type = request.POST.get('place_id').split('-')
             place_code = request.POST.get('place_code')
             is_checked_sensor = request.POST.get('is_checked_sensor')
+            data_status = request.POST.get('data_status')
             is_checked = request.POST.get('is_checked')
-            is_checked_data = 'a' if is_checked == 'true' else 'b'
             is_checked_bool = True if is_checked_sensor == 'true' else False
 
             try:
-                place = request.user.related_place.get(place_code=place_code)
+                place = request.user.related_place.get(place_code=place_id)
             except Place.DoesNotExist:
                 message_error = "Không tìm thấy nhóm này!"
                 return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
@@ -255,28 +254,26 @@ def api_control_place(request):
                     place.load_main = is_checked_bool
                     place.save()
                     is_checked_data = 'a' if is_checked_bool else 'b'
-                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data, control_type=control_type)):
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_id, load_id=load_name, is_checked=is_checked_data, control_type=control_type)):
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
-                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data, control_type=control_type), 'status': False}), content_type='application/json')
+                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_id, load_id=load_name, is_checked=is_checked_data, control_type=control_type), 'status': False}), content_type='application/json')
                 elif control_type == 'status':
                     place.status = is_checked_bool
                     place.save()
-                    if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data)):
+                    if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_id, load_id=load_name, is_checked=is_checked)):
                         if is_checked_bool:
                             return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': True}), content_type='application/json')
                         return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': False}), content_type='application/json')
                 else:
                     load = place.related_loads.filter(serial=load_name).first()
                     if load.typeLoad != 2:
-                        is_checked_data = 'a' if not load.status else 'b'
-                        if load:
-                            load.status = not load.status
-                            load.save()
+                        print data_status, is_checked
+                        is_checked_data = 'a' if not data_status != '0' else 'b'
                     else:
                         is_checked_data = is_checked
-                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data, control_type=control_type)):
+                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_id, load_id=load.serial, is_checked=is_checked_data, control_type=control_type)):
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
-                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data, control_type=control_type), 'status': False}), content_type='application/json')
+                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_id, load_id=load.serial, is_checked=is_checked_data, control_type=control_type), 'status': False}), content_type='application/json')
                 message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
