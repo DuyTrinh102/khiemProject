@@ -517,17 +517,27 @@
 			if (type === 1){
 				$('#' + data['serial']).val(value);
 			} else {
-			    console.log($('#' + place_id + '-' + data['serial'] + '-' +'sensor').is(":checked"));
-			    if ($('#' + place_id + '-' + data['serial'] + '-' + 'sensor').is(":checked")){
-			        console.log('aaa');
-                    if (value === 0) {
-                        $('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
-                        $('#' + data['serial']).html('<strong>Warning!!!</strong> Có báo động!!!');
-                    } else {
-                        $('#' + data['serial']).attr('style', 'background-color: #49a844; color: white;');
-                        $('#' + data['serial']).html('<strong>Well!</strong> Khu vực của bạn an toàn');
+			    if (type === 2){
+			        if ($('#' + place_id + '-' + data['serial'] + '-' + 'sensor').is(":checked")){
+                        console.log('aaa');
+                        if (value === 0) {
+                            $('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
+                            $('#' + data['serial']).html('<strong>Warning!!!</strong> Có báo động!!!');
+                        } else {
+                            $('#' + data['serial']).attr('style', 'background-color: #49a844; color: white;');
+                            $('#' + data['serial']).html('<strong>Well!</strong> Khu vực của bạn an toàn');
+                        }
                     }
+                } else {
+			        if (value === 0) {
+                            $('#' + data['serial']).attr('style', 'background-color: #d40c38; color: #FD7415;');
+                            $('#' + data['serial']).html('<strong>Warning!!!</strong> Có báo động!!!');
+                        } else {
+                            $('#' + data['serial']).attr('style', 'background-color: #49a844; color: white;');
+                            $('#' + data['serial']).html('<strong>Well!</strong> Khu vực của bạn an toàn');
+                        }
                 }
+
 			}
 		} catch (e) {
 			var data_list = data.split("-");
