@@ -1,6 +1,7 @@
 {% extends 'base_page.html' %}
 {% load static %}
 {% load template_utils %}
+{% load index %}
 
 
 {% block head %}
@@ -247,6 +248,11 @@
                     </tr>
                     </thead>
                     <tbody>
+
+                    {% for place in places %}
+                        <p>{{ places|index:forloop.counter0 }}</p>
+                    {% endfor %}
+
                     {% for place in places %}
                         <tr>
                             <td width="40%">
