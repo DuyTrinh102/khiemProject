@@ -459,6 +459,7 @@
 				timeout: 60,
 				userName: 'vwlfeugw',
 				password: 'YM_PrssCv2lu',
+
 				cleanSession: true,
 				onSuccess: function () {
 					// client.send(topic, value);
