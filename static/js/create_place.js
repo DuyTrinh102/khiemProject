@@ -462,7 +462,7 @@
 				cleanSession: true,
 				onSuccess: function () {
 					// client.send(topic, value);
-                    client.subscribe('subscribeTopic');
+                    client.subscribe('subscribeTopic2');
                     console.log('Connect successfully');
                     $('#content-body').attr('style', 'filter: none');
 			        $('#loader').attr('style','display: none');
