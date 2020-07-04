@@ -24,7 +24,7 @@ SECRET_KEY = 'muhkuv!sh#6m+=94s@y+$np9f_bvz=-cn%^st7ooi)1nf_*!g)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'khiemproject.pythonanywhere.com', '192.168.0.121', 'iotprojecttdtu.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', 'khiemproject.pythonanywhere.com', '192.168.0.126', 'iotproject2019.pythonanywhere.com']
 
 # Application definition
 
