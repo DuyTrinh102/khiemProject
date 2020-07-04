@@ -1,0 +1,61 @@
+@media (max-width: 768px) {
+  .btn-vertical {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .btn-vertical > .btn,
+  .btn-group > .btn {
+    position: relative;
+    float: left;
+  }
+  .btn-vertical > .btn,
+  .btn-vertical > .btn-group,
+  .btn-vertical > .btn-group > .btn {
+    display: block;
+    float: none;
+    width: 100%;
+    max-width: 100%;
+  }
+  .btn-vertical > .btn-group > .btn {
+    float: none;
+  }
+  .btn-vertical>.btn+.btn,
+  .btn-vertical>.btn+.btn-group,
+  .btn-vertical>.btn-group+.btn,
+  .btn-vertical>.btn-group+.btn-group {
+    margin-top: -1px;
+    margin-left: 0;
+  }
+  .btn-vertical>.btn:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+  .btn-vertical>.btn:first-child:not(:last-child) {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .btn-vertical>.btn:last-child:not(:first-child) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .btn-vertical>.btn-group:not(:first-child):not(:last-child)>.btn {
+    border-radius: 0;
+  }
+  .btn-vertical>.btn-group:first-child:not(:last-child)>.btn:last-child,
+  .btn-vertical>.btn-group:first-child:not(:last-child)>.dropdown-toggle {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .btn-vertical>.btn-group:last-child:not(:first-child)>.btn:first-child {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
+.btn-group.btn-group-lg .btn {
+  border-radius: 0;
+  border: none;
+}
