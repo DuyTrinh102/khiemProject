@@ -25,7 +25,7 @@
         try {
             var host = 'm16.cloudmqtt.com';
 			var port = 39932;
-            var topic = 'publishTopic';
+            var topic = 'publishTopic2';
             $('#content-body').attr('style', 'filter: blur(10px');
             $('#loader').attr('style', 'display: block');
             var clientID = uuid('hex');
@@ -364,7 +364,6 @@
                                 var value = result.message;
                                 client.send(topic, value);
                             }
-
                         }
                         else {
                             alert(result.message);
