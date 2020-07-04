@@ -2,12 +2,22 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django import forms
 from .models import Place, Load, Sensor
+
+
+class LoadForm(forms.ModelForm):
+	class Meta:
+		model = Load
+		fields = '__all__'
+		widgets = {
+			'password': forms.PasswordInput(render_value=True),
+		}
 
 
 class LoadInlines(admin.TabularInline):
 	model = Load
-	fields = ('name', 'serial', 'typeLoad', 'status')
+	form = LoadForm
 	extra = 0
 
 

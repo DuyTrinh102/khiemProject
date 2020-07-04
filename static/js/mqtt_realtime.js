@@ -41,11 +41,12 @@
 			var options = {
 				useSSL: true,
 				timeout: 60,
-				userName: 'tnuxyfho',
-				password: 'JrFzY67tUXXT',
+				userName: 'vwlfeugw',
+				password: 'DUpHC0CbRzrX',
 				cleanSession: true,
 				onSuccess: function () {
 					client.subscribe(topic);
+					console.log('Connect subscibe successfully');
 				},
 				onFailure: function () {
 					doFail(host, port, topic)
@@ -86,6 +87,7 @@
 				}
 			}
 		} catch (e) {
+			console.log('AAAAA');
 			var data_list = data.split("-");
 			if (data_list.length === 3) {
 				if (data_list[2] === "status") {
@@ -96,9 +98,21 @@
 						var status = data_status[i].split(":");
 						if (status[1] === "a") {
 							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledon-icon.jpg');
-							console.log('AAAAAAAAAAa')
 						} else {
 							$('#' + data_list[0] + "-" + status[0] + '-status').attr('src', '/static/images/ledoff-icon.png');
+						}
+					}
+				}
+				else if (data_list[2] === "statusC") {
+					var data_status2 = data_list[1].split(";");
+					console.log(data_status2);
+					var ii;
+					for (ii = 0; ii < data_status2.length; ii++) {
+						var status2 = data_status2[ii].split(":");
+						if (status2[1] === "a") {
+							$('#' + data_list[0] + "-" + status2[0] + '-status').attr('src', '/static/images/2x/baseline_lock_open_white_48dp.png');
+						} else {
+							$('#' + data_list[0] + "-" + status2[0] + '-status').attr('src', '/static/images/2x/baseline_lock_white_48dp.png');
 						}
 					}
 				}

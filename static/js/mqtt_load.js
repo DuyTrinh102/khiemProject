@@ -40,7 +40,7 @@
 				useSSL: true,
 				timeout: 60,
 				userName: 'vwlfeugw',
-				password: 'CHom7E-WyGQ0',
+				password: 'YM_PrssCv2lu',
 				cleanSession: true,
 				onSuccess: function () {
 					clientPub.subscribe(topic);
