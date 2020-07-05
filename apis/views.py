@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import ast
 import datetime
 
+from django.conf import settings
 from django.db import IntegrityError
 from django.http import HttpResponse
 from rest_framework.decorators import api_view, permission_classes
@@ -25,7 +26,8 @@ from places.models import Place, LOAD_LIST, Load, UnitPrice
 def home_page(request):
     if request.user.is_authenticated:
         return redirect('view_get_devices_places')
-    return render(request, 'home.html')
+    ctx = {'name': getattr(settings, 'AUTHOR_NAME', 'Nguyen Van A'), 'school': getattr(settings, 'AUTHOR_SCHOOL', 'University')}
+    return render(request, 'home.html', ctx)
 
 
 def signup(request):
@@ -99,7 +101,7 @@ def view_get_devices_places(request):
                 'devices': place.devices.all(),
                 'sensors': place.sensors.all()
             })
-        return render(request, 'device_view.html', {'places': data})
+        return render(request, 'device_view.html', {'places': data, 'name': getattr(settings, 'AUTHOR_NAME', 'Nguyen Van A'), 'school': getattr(settings, 'AUTHOR_SCHOOL', 'University')})
     return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 
 
@@ -238,6 +240,7 @@ def api_control_place(request):
         message_error = 'Bạn không có quyền thêm thiết bị!'
     else:
         if request.is_ajax():
+            print request.POST.get('place_id'), request.POST.get('is_checked'), request.POST.get('is_checked_sensor')
             place_id, load_name, control_type = request.POST.get('place_id').split('-')
             place_code = request.POST.get('place_code')
             is_checked_sensor = request.POST.get('is_checked_sensor')
@@ -261,10 +264,8 @@ def api_control_place(request):
                 elif control_type == 'status':
                     place.status = is_checked_bool
                     place.save()
-                    if publish_topic_mqtt('{place_code}-{load_id}-{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data)):
-                        if is_checked_bool:
-                            return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': True}), content_type='application/json')
-                        return HttpResponse(json.dumps({'result': True, 'message': 'Thành công!', 'status': True, 'is_checked': False}), content_type='application/json')
+                    is_checked_data = 'a' if is_checked_bool else 'b'
+                    return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data), 'status': False}), content_type='application/json')
                 else:
                     load = place.related_loads.filter(serial=load_name).first()
                     if load.typeLoad != 2:
