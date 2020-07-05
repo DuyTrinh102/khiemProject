@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import ast
 import datetime
 
+from django.conf import settings
 from django.db import IntegrityError
 from django.http import HttpResponse
 from rest_framework.decorators import api_view, permission_classes
@@ -25,7 +26,8 @@ from places.models import Place, LOAD_LIST, Load, UnitPrice
 def home_page(request):
     if request.user.is_authenticated:
         return redirect('view_get_devices_places')
-    return render(request, 'home.html')
+    ctx = {'name': getattr(settings, 'AUTHOR_NAME', 'Nguyen Van A'), 'school': getattr(settings, 'AUTHOR_SCHOOL', 'University')}
+    return render(request, 'home.html', ctx)
 
 
 def signup(request):
@@ -99,7 +101,7 @@ def view_get_devices_places(request):
                 'devices': place.devices.all(),
                 'sensors': place.sensors.all()
             })
-        return render(request, 'device_view.html', {'places': data})
+        return render(request, 'device_view.html', {'places': data, 'name': getattr(settings, 'AUTHOR_NAME', 'Nguyen Van A'), 'school': getattr(settings, 'AUTHOR_SCHOOL', 'University')})
     return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 
 
