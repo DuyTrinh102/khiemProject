@@ -25,7 +25,7 @@
         try {
             var host = 'm16.cloudmqtt.com';
 			var port = 39932;
-            var topic = 'publishTopic';
+            var topic = pub_topic;
             $('#content-body').attr('style', 'filter: blur(10px');
             $('#loader').attr('style', 'display: block');
             var clientID = uuid('hex');
@@ -462,7 +462,7 @@
 				cleanSession: true,
 				onSuccess: function () {
 					// client.send(topic, value);
-                    client.subscribe('subscribeTopic');
+                    client.subscribe(sub_topic);
                     console.log('Connect successfully');
                     $('#content-body').attr('style', 'filter: none');
 			        $('#loader').attr('style','display: none');

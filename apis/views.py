@@ -101,7 +101,13 @@ def view_get_devices_places(request):
                 'devices': place.devices.all(),
                 'sensors': place.sensors.all()
             })
-        return render(request, 'device_view.html', {'places': data, 'name': getattr(settings, 'AUTHOR_NAME', 'Nguyen Van A'), 'school': getattr(settings, 'AUTHOR_SCHOOL', 'University')})
+        ctx = {
+            'places': data, 'name': getattr(settings, 'AUTHOR_NAME', 'Nguyen Van A'),
+            'school': getattr(settings, 'AUTHOR_SCHOOL', 'University'),
+            'pub_topic': getattr(settings, 'PUBLISH_TOPIC', 'publishTopic'),
+            'sub_topic': getattr(settings, 'SUBSCRIBE_TOPIC', 'subscribeTopic')
+        }
+        return render(request, 'device_view.html', ctx)
     return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
 
 

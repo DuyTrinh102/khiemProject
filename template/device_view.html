@@ -4,6 +4,10 @@
 
 
 {% block head %}
+    <script>
+        var pub_topic = "{{ pub_topic }}";
+        var sub_topic = "{{ sub_topic }}";
+    </script>
     <script type="application/javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/mqtt/mqttws31.js' %}"></script>
