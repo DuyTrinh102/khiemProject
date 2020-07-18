@@ -26,7 +26,7 @@
             var host = 'm16.cloudmqtt.com';
 			var port = port_queue;
             var topic = pub_topic;
-            console.log(pub_topic, sub_topic, port_queue, username, pwd);
+            // console.log(pub_topic, sub_topic, port_queue, username, pwd);
             $('#content-body').attr('style', 'filter: blur(10px');
             $('#loader').attr('style', 'display: block');
             var clientID = uuid('hex');
