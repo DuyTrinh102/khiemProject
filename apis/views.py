@@ -105,7 +105,9 @@ def view_get_devices_places(request):
             'places': data, 'name': getattr(settings, 'AUTHOR_NAME', 'Nguyen Van A'),
             'school': getattr(settings, 'AUTHOR_SCHOOL', 'University'),
             'pub_topic': getattr(settings, 'PUBLISH_TOPIC', 'publishTopic'),
-            'sub_topic': getattr(settings, 'SUBSCRIBE_TOPIC', 'subscribeTopic')
+            'sub_topic': getattr(settings, 'SUBSCRIBE_TOPIC', 'subscribeTopic'),
+            'username': getattr(settings, 'USERNAME_QUEUE', 'vwlfeugw'),
+            'pwd': getattr(settings, 'PWD_QUEUE', 'YM_PrssCv2lu'),
         }
         return render(request, 'device_view.html', ctx)
     return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})

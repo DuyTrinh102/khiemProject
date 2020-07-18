@@ -457,8 +457,8 @@
 			var options = {
 				useSSL: true,
 				timeout: 60,
-				userName: 'vwlfeugw',
-				password: 'YM_PrssCv2lu',
+				userName: username,
+				password: pwd,
 				cleanSession: true,
 				onSuccess: function () {
 					// client.send(topic, value);
