@@ -108,7 +108,7 @@ def view_get_devices_places(request):
             'sub_topic': getattr(settings, 'SUBSCRIBE_TOPIC', 'subscribeTopic'),
             'username': getattr(settings, 'USERNAME_QUEUE', 'vwlfeugw'),
             'pwd': getattr(settings, 'PWD_QUEUE', 'YM_PrssCv2lu'),
-            'port': getattr(settings, 'PORT_QUEUE', 3992),
+            'port_queue': getattr(settings, 'PORT_QUEUE', 39932),
         }
         return render(request, 'device_view.html', ctx)
     return render(request, 'includes/403.html', {'message': 'Vui lòng đăng nhập lại !'})
