@@ -24,7 +24,7 @@
 
         try {
             var host = 'm16.cloudmqtt.com';
-			var port = 39932;
+			var port = port;
             var topic = pub_topic;
             $('#content-body').attr('style', 'filter: blur(10px');
             $('#loader').attr('style', 'display: block');
