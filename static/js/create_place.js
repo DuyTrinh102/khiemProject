@@ -492,7 +492,7 @@
                     $('#loader').attr('style', 'display: none');
                 },
                 onFailure: function () {
-                    doFail(host, port, topic, value)
+                    doFail(host, port, topic, client)
                 }
             };
             client.onConnectionLost = onConnectionLost;
