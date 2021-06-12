@@ -277,17 +277,24 @@ def api_control_place(request):
                     return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}'.format(place_code=place_code, load_id=load_name, is_checked=is_checked_data), 'status': False}), content_type='application/json')
                 else:
                     load = place.related_loads.filter(serial=load_name).first()
-                    if load.typeLoad != 2:
-                        is_checked_data = 'a' if not load.status else 'b'
-                        if load:
-                            load.status = not load.status
-                            load.save()
+                    print load, control_type
+                    if control_type == 'controlA':
+                        data = int(not load.status)
+                        load.status = not load.status
+                    elif control_type == 'controlB':
+                        data = request.POST.get('data')
+                        load.value = data
                     else:
-                        is_checked_data = is_checked
-                    if publish_topic_mqtt('{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data, control_type=control_type)):
+                        data = request.POST.get('data')
+                        r, g, b = data.split(',')
+                        load.val_red = r
+                        load.val_green = g
+                        load.val_blue = b
+                    print data
+                    if publish_topic_mqtt('{place_code}-{load_id}:{data}-{control_type}'.format(place_code=place_code, load_id=load.serial, data=data, control_type=control_type)):
+                        load.save()
                         return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
                     return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{is_checked}-{control_type}'.format(place_code=place_code, load_id=load.serial, is_checked=is_checked_data, control_type=control_type), 'status': False}), content_type='application/json')
-                message_error = 'Không thể gửi tín hiệu, kiểm tra lại kết nối của bạn!'
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
 
 

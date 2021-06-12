@@ -69,6 +69,7 @@
             -ms-transform: translateX(55px);
             transform: translateX(40px);
         }
+
         .on {
             display: none;
         }
@@ -151,6 +152,7 @@
             -ms-transform: translateX(55px);
             transform: translateX(55px);
         }
+
         .on {
             display: none;
         }
@@ -189,17 +191,20 @@
             word-wrap: break-word;
             float: left;
         }
+
         .btn-responsive2 {
             white-space: normal !important;
             word-wrap: break-word;
         }
+
         .panel-responsive {
             white-space: normal !important;
             word-wrap: break-word;
             background-color: #0c5460;
-            position: center;
+            position: relative;
             width: 100%;
         }
+
         .panel-responsive2 {
             white-space: normal !important;
             word-wrap: break-word;
@@ -212,10 +217,10 @@
 {% block body %}
     <div id="loader"></div>
     <div class="container-fluid bg-10 text-center" style="filter: blur(10px); display: none;" role="main" id="content-body">
-        <div class="container">
-            <div id="dialog-form" title="Thêm khu vực của bạn"></div>
-            <button type="button" id="btnCreate" class="btn btn-info create-place" data-url="{% url 'api_create_place' %} " >Thêm khu vực</button>
-        </div>
+        {#        <div class="container">#}
+        {#            <div id="dialog-form" title="Thêm khu vực của bạn"></div>#}
+        {#            <button type="button" id="btnCreate" class="btn btn-info create-place" data-url="{% url 'api_create_place' %} " >Thêm phòng</button>#}
+        {#        </div>#}
         <div id="users-contain" class="container bg-4 text-center">
             {% if places %}
                 <div id="auth-form" title="Xác thực mật khẩu">
@@ -245,138 +250,129 @@
                 <div id="dialog-form2" title="Create new device"></div>
                 <div id="dialog-form3" title="Control place"></div>
                 <div id="dialog-form4" title="Delete device"></div>
+                <h2 class="text-left">Welcome to your home!</h2>
                 <table id="users" class="table table-bordered" style="position: relative;">
-                    <thead class="text-center">
-                    <tr>
-                        <th class="text-warning text-center">Khu vực</th>
-                        <th class="text-warning text-center">Cảm biến</th>
-                        <th class="text-warning text-center">Địa chỉ</th>
-                    </tr>
-                    </thead>
+                    {#                    <thead class="text-center">#}
+                    {#                    <tr>#}
+                    {#                        <th class="text-info text-center">Welcome to your home!</th>#}
+                    {#                        <th class="text-warning text-center">Cảm biến</th>#}
+                    {#                        <th class="text-warning text-center">Địa chỉ</th>#}
+                    {#                    </tr>#}
+                    {#                    </thead>#}
                     <tbody>
                     {% for place in places %}
-                        <tr>
-                            <td width="40%">
-                                <div class="page-header">{{ place.name }}</div>
-{#                                    <label class="switch2" style="float: right;">#}
-{#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-mode-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>#}
-{#                                            <div class="slider2"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>#}
-{#                                    </label>#}
-                                <br><hr width="80%">
-                                <!-- Rectangular switch -->
-{#                                        <label class="switch" style="float: right;">#}
-{#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-load_main" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"#}
-{#                                                    {% if place.load_main %} checked="checked" {% endif %}#}
-{#                                                    {% if place.status %} disabled {% endif %}#}
-{#                                                onclick="document.getElementById('warning').src='{% static 'images/ledon.jpg' %}'"#}
-{#                                            >#}
-{#                                            <div class="slider"><span class="on">Water ON</span><span class="off">Water OFF</span><!--END--></div>#}
-{#                                        </label>#}
-                                    {% for load in place.loads %}
-                                        {% ifequal load.typeLoad 0%}
-                                            <div class="row" style="width: 100%; padding-left: 2rem;">
-                                                <button type="button" class="btn btn-danger btn-responsive control-load" id="{{ place.place_code }}-{{ load.serial }}-controlA" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
-                                                <img id="{{ place.place_code }}-{{ load.serial }}-statusA" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px;filter: brightness(120%); float: right; display: inline-block;">
+                        <tr aria-rowspan="1">
+                            <th>
+                                {{ place.name }}
+                                {#                                    <label class="switch2" style="float: right;">#}
+                                {#                                            <input type="checkbox" class="control-load" id="{{ place.id }}-mode-status" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" {% if place.status %} checked="checked" {% endif %}>#}
+                                {#                                            <div class="slider2"><span class="on">Auto</span><span class="off">Manual</span><!--END--></div>#}
+                                {#                                    </label>#}
+                            </th>
+                            <td>
+
+                                {% for load in place.loads %}
+                                    {% ifequal load.typeLoad 0 %}
+                                        <div class="row" style="width: 100%; padding-left: 2rem;">
+                                            <div class="panel panel-responsive">
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">{{ load.name }}</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <button type="button" class="btn btn-responsive btn-warning control-load" id="{{ place.place_code }}-{{ load.serial }}-controlA" data-isAlert="0" data-url="{% url 'api_control_place' %}"
+                                                            data-place-code="{{ place.place_code }}">{{ load.name }}</button>
+                                                    <img id="{{ place.place_code }}-{{ load.serial }}-statusA" src="{% static 'images/ledoff-icon.png' %}" alt=".." style="width: 50px; filter: brightness(120%); float: right; display: inline-block;">
+                                                </div>
                                             </div>
-                                            <br>
-                                        {% endifequal %}
-                                    {% endfor %}
-                                    <hr width="80%">
-                                    {% for load in place.loads %}
-                                        {% ifequal load.typeLoad 1%}
-                                            <div class="row" style="width: 100%; padding-left: 2rem;">
-                                                <button type="button" class="btn btn-warning btn-responsive authentication" id="{{ place.place_code }}-{{ load.serial }}-controlB" data-isAlert="0" data-url="{% url 'authentication' %}" data-place-code="{{ place.place_code }}">{{load.name}}</button>
-                                                <button type="button" class="btn btn-responsive change-authentication" id="{{ load.serial }}-change" data-url="{% url 'api_change_authentication' %}" style="background-color: transparent;">
-                                                    <img id="{{ place.place_code }}-{{ load.serial }}-settingB" src="{% static 'images/2x/baseline_settings_white_18dp.png' %}" alt=".." style="width: 20px; display: block;">
-                                                </button>
-                                                <img id="{{ place.place_code }}-{{ load.serial }}-statusB" data-status="0" src="{% static 'images/2x/baseline_lock_white_48dp.png' %}" alt=".." style="width: 50px; fill: white; float: right; display: block;">
-                                            </div>
-                                            <br>
-                                        {% endifequal %}
-                                    {% endfor %}
-                                    <hr width="80%">
-                                    {% for load in place.loads %}
-                                        {% ifequal load.typeLoad 2%}
-                                            <div class="row" style="width: 100%; padding-left: 1rem; padding-right: 1px;"  >
-                                                <div class="panel panel-responsive">
-    {#                                                <div class="panel panel-default panel-responsive" style="width: 18rem;">#}
-                                                        <div class="panel-heading">
-                                                            <h3 class="panel-title">{{ load.name }}</h3>
-                                                        </div>
-                                                        <div class="panel-body">
-                                                            <div class="btn-group btn-group-sm btn-vertical">
-                                                                <button type="button" class="btn btn-danger btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="b">tắt</button>
-                                                                <button type="button" class="btn btn-info btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="1">thấp</button>
-                                                                <button type="button" class="btn btn-info btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="2">vừa</button>
-                                                                <button type="button" class="btn btn-info btn-responsive2 control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC" data-isAlert="0" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}" data-control="3">cao</button>
+                                        </div>
+                                    {% endifequal %}
+                                {% endfor %}
+
+                                {% for load in place.loads %}
+                                    {% ifequal load.typeLoad 1 %}
+                                        <div class="row" style="width: 100%; padding-left: 2rem;">
+
+                                            <div class="panel panel-responsive">
+                                                {#                                                <div class="panel panel-default panel-responsive" style="width: 18rem;">#}
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">{{ load.name }}</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="xw3-light-grey">
+                                                        <div>
+                                                            <div>
+                                                                <div id="resGray-{{ place.place_code }}-{{ load.serial }}-slideGray" style="line-height: 50px; background-color: rgb({{ load.value }}, {{ load.value }}, {{ load.value }});">
+                                                                    <p id="grayresulttext"
+                                                                       style="font-size: 120%; font-weight: bold; font-family: Consolas, Courier, monospace; color: gray;">
+                                                                        Brightness</p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    {#                                                </div>#}
-                                                </div>
-{#                                                <img id="{{ place.place_code }}-{{ load.serial }}-status" data-status="0" src="{% static 'images/2x/baseline_lock_white_48dp.png' %}" alt=".." style="width:50px; float: right; display: inline-block;">#}
-                                                <div class="progress">
-                                                    <div class="progress-bar progress-bar-success progress-bar-striped active" id="{{ place.place_code }}-{{ load.serial }}-statusC" style="width: 0; color: #0b2e13; text-align: center;">
-                                                        Tắt
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                        {% endifequal %}
-                                    {% endfor %}
-                            </td>
-
-                            <td width="40%">
-                                {% if place.sensors.all %}
-                                    {% for sensor in place.sensors %}
-                                        {% if sensor.type_display == 1 %}
-                                            <div class="row" style="padding-right: 1rem">
-                                            <i>{{ sensor.name }} ({{ sensor.unit }})</i>
-{#                                            <button type="submit" class="delete-device" id="{{ device.id }}" data-url="{% url 'api_delete_device' %}" style="background: #4e555b; float: right;">#}
-{#                                            <i class="fa fa-trash" aria-hidden="true" size="2px;"></i></button>#}
-                                            <input class="input-vertical" type="text" id="{{ sensor.serial }}" style="float: right; width: 50%; color: #1b1e21; display: inline-block" disabled />
-
-                                            </div>
-                                        {% elif sensor.type_display == 2 %}
-                                            <div class="row" style="padding-left: 1rem; padding-right: 1rem;" >
-                                                <div class=".col-sm">
-                                                    <i>{{ sensor.name }} </i>
-                                                    <label class="switch" style="float: right;">
-                                                        <input type="checkbox" class="control-load" id="{{ place.id }}-{{ sensor.serial }}-sensor" data-url="{% url 'api_control_place' %}" data-place-code="{{ place.place_code }}"
-                                                                {% if place.load_main %} checked="checked" {% endif %}
-                                                        >
-                                                        <div class="slider round"><span class="on">ON</span><span class="off">OFF</span></div>
-                                                    </label>
-                                                </div>
-                                                <div class=".col-sm">
-                                                    <div class="panel panel-success panel-responsive" style="background-color: #49a844;">
-                                                        <div class="panel-body" id="{{ sensor.serial }}">
-                                                            <strong>Well!</strong> Khu vực của bạn an toàn.
+                                                        <div class="row text-center align-items-center">
+                                                            <div class="col-sm-12">
+                                                                <input type="range" id="{{ place.place_code }}-{{ load.serial }}-slideGray" name="slideGray" value="{{ load.value }}" min="0" max="255">
+                                                                <div id="valGray-{{ place.place_code }}-{{ load.serial }}-slideGray" xstyle="background-color:red;border-radius:5px;color:white;opacity:0.8">{{ load.value }}</div>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <button class="btn btn-primary control-load" id="{{ place.place_code }}-{{ load.serial }}-controlB"
+                                                            data-isAlert="0" data-url="{% url 'api_control_place' %}"
+                                                            data-place-code="{{ place.place_code }}"
+                                                    >Send</button>
                                                 </div>
                                             </div>
-                                        {% else %}
-                                            <div class="row" style="padding-left: 1rem; padding-right: 1rem;" >
-                                                <i>{{ sensor.name }} </i>
-{#                                            <img id="{{ sensor.serial }}" src="{% static 'images/yesBg.png' %}" alt=".." style="width: 80%;filter: brightness(120%); position: center; display: inline-block;">#}
-                                                <div class="panel panel-success panel-responsive" style="background-color: #49a844;">
-                                                    <div class="panel-body" id="{{ sensor.serial }}">
-                                                        <strong>Well!</strong> Khu vực của bạn an toàn.
+                                        </div>
+                                    {% endifequal %}
+                                {% endfor %}
+
+                                {% for load in place.loads %}
+                                    {% ifequal load.typeLoad 2 %}
+                                        <div class="row" style="width: 100%; padding-left: 2rem; padding-right: 1px;">
+                                            <div class="panel panel-responsive">
+                                                {#                                                <div class="panel panel-default panel-responsive" style="width: 18rem;">#}
+                                                <div class="panel-heading">
+                                                    <h3 class="panel-title">{{ load.name }}</h3>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="xw3-light-grey">
+                                                        <div>
+                                                            <div>
+                                                                <div id="resRGB-{{ place.place_code }}-{{ load.serial }}" style="line-height: 50px; background-color: rgb({{ load.val_red }}, {{ load.val_green }}, {{ load.val_blue }});">
+                                                                    <p id="rgbresulttext"
+                                                                       style="font-size: 120%; font-weight: bold; font-family: Consolas, Courier, monospace; color: gray;">
+                                                                        Light Color</p></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row text-center align-items-center">
+                                                            <div class="col-sm-4">
+                                                                <p style="color: #b40000">RED</p>
+                                                                <input type="range" id="{{ place.place_code }}-{{ load.serial }}-slideRed" name="slideRed" value="{{ load.val_red }}" min="0" max="255">
+                                                                <div id="valRGB-{{ place.place_code }}-{{ load.serial }}-slideRed" xstyle="background-color:red;border-radius:5px;color:white;opacity:0.8">{{ load.val_red }}</div>
+
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <p style="color: green">GREEN</p>
+                                                                <input type="range" id="{{ place.place_code }}-{{ load.serial }}-slideGreen" name="slideGreen" value="{{ load.val_green }}" min="0" max="255">
+                                                                <div id="valRGB-{{ place.place_code }}-{{ load.serial }}-slideGreen" xstyle="background-color:#00ff00;border-radius:5px;opacity:0.8">{{ load.val_green }}</div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <p style="color: #00007d">BLUE</p>
+                                                                <input type="range" id="{{ place.place_code }}-{{ load.serial }}-slideBlue" name="slideBlue" value="{{ load.val_blue }}" min="0" max="255">
+                                                                <div id="valRGB-{{ place.place_code }}-{{ load.serial }}-slideBlue" xstyle="background-color:blue;border-radius:5px;color:white;opacity:0.8">{{ load.val_blue }}</div>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <button class="btn btn-success control-load" id="{{ place.place_code }}-{{ load.serial }}-controlC"
+                                                            data-isAlert="0" data-url="{% url 'api_control_place' %}"
+                                                            data-place-code="{{ place.place_code }}"
+                                                    >Send</button>
                                                 </div>
                                             </div>
-                                        {% endif %}
-                                        <hr width="80%" style="position: center; padding-top: 5px;">
-                                    {% endfor %}
-                                {% else %}
-                                    Chưa có cảm biến nào
-                                {% endif %}
-{#                                    <hr>#}
-{#                                    <button type="button" class="add-device" id="{{ place.id }}" style="float: right;" data-url="{% url 'api_create_device' %}">#}
-{#                                        <span class="glyphicon glyphicon-plus" style="color: black"></span>#}
-{#                                    </button>#}
+                                        </div>
+                                    {% endifequal %}
+                                {% endfor %}
                             </td>
-                            <td>{{ place.address }}</td>
+
                         </tr>
                     {% endfor %}
                     </tbody>
