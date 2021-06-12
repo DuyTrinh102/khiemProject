@@ -291,8 +291,8 @@ def api_control_place(request):
                     load.val_green = g
                     load.val_blue = b
                 print data
+                load.save()
                 if publish_topic_mqtt('{place_code}-{load_id}:{data}-{control_type}'.format(place_code=place_code, load_id=load.serial, data=data, control_type=control_type)):
-                    load.save()
                     return HttpResponse(json.dumps({'result': True, 'isPub': False, 'message': 'Thành công!', 'status': False}), content_type='application/json')
                 return HttpResponse(json.dumps({'result': True, 'isPub': True, 'message': '{place_code}-{load_id}:{data}-{control_type}'.format(place_code=place_code, load_id=load.serial, data=data, control_type=control_type), 'status': False}), content_type='application/json')
     return HttpResponse(json.dumps({'result': False, 'message': message_error}), content_type='application/json')
