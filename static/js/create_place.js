@@ -374,6 +374,7 @@
                     data: data
                 },
                 'success': function (result) {
+                    console.log(result);
                     if (result.result) {
                         // alert(result.message);
                         if (result.status) {
