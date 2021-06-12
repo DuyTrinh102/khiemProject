@@ -349,6 +349,7 @@
                 var val_blu = $('#' + pat[0] + '-' + pat[1] + '-slideBlue').val();
                 data  = val_red + ',' + val_gre + ',' + val_blu
             }
+            console.log(data);
             $.fn.csrfSafeMethod = function (method) {
                 // these HTTP methods do not require CSRF protection
                 return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
