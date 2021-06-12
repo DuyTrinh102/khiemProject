@@ -50,7 +50,7 @@ class Place(models.Model):
 class Load(models.Model):
     place = models.ForeignKey(Place, related_name="related_loads")
     name = models.CharField(max_length=30)
-    serial = models.CharField(max_length=30, unique=True)
+    serial = models.CharField(max_length=30)
     status = models.BooleanField(default=False)
     value = models.IntegerField(blank=True, null=True, default=0)
     val_red = models.IntegerField(default=0)
